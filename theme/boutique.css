@@ -1,0 +1,110 @@
+:root {
+  --bg: #f9f7fb;
+  --panel: #ffffff;
+  --border: #c9b6e4;
+  --accent: #8b5fbf;
+  --text: #2b223a;
+  --muted: #6b5a85;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14121a;
+    --panel: #1e1b26;
+    --border: #3b2f52;
+    --accent: #c9a7ff;
+    --text: #e9e4f2;
+    --muted: #a899c1;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.container {
+  max-width: 880px;
+  margin: auto;
+  background: var(--panel);
+  border: 2px solid var(--border);
+}
+
+header {
+  text-align: center;
+  padding: 1.8rem;
+  border-bottom: 2px solid var(--border);
+}
+
+header h1 {
+  margin: 0;
+  letter-spacing: 0.25em;
+}
+
+.tagline {
+  color: var(--muted);
+  font-style: italic;
+}
+
+main {
+  padding: 2rem;
+}
+
+.date {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+.tree {
+  font-family: "Courier New", monospace;
+  line-height: 1.6;
+}
+
+.tree-folder {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.tree-file {
+  margin-left: 1.5rem;
+}
+
+.tree-branch {
+  color: var(--muted);
+}
+
+.tree img {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  border-top: 2px solid var(--border);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}

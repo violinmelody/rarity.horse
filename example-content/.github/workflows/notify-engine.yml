@@ -1,0 +1,17 @@
+# rarity-content/.github/workflows/notify-engine.yml
+name: Notify Engine
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Engine Build
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.RARITY_ENGINE_REPO_PAT }}
+          repository: YOURNAME/rarity.horse
+          event-type: build-from-content
