@@ -35,13 +35,14 @@ OUT.mkdir(exist_ok=True)
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     category = rel.parent.as_posix()
-    tree.setdefault(category, []).append(rel)
+
+    date = datetime.fromtimestamp(md_file.stat().st_mtime).strftime("%Y-%m-%d")
+    tree.setdefault(category, []).append((rel, date))
 
     html_body = md.convert(md_file.read_text())
     md.reset()
 
     title = title_from_file(md_file)
-    date = datetime.fromtimestamp(md_file.stat().st_mtime).strftime("%Y-%m-%d")
 
     article_html = render(
         article_tpl,
@@ -73,24 +74,25 @@ for md_file in CONTENT.rglob("*.md"):
 def build_ascii_tree(tree):
     html = "<div class='tree'>"
 
-    for category, files in sorted(tree.items()):
+    for category, entries in sorted(tree.items()):
         html += (
             "<div class='tree-folder'>"
-            "<img src='/rarity.horse/theme/icons/folder.png' alt='[+]'> "
+            "<img src='./theme/icons/folder.png' alt='[+]'> "
             f"{category}"
             "</div>"
         )
 
-        for i, f in enumerate(sorted(files)):
-            branch = "└──" if i == len(files) - 1 else "├──"
+        for i, (f, date) in enumerate(sorted(entries)):
+            branch = "└──" if i == len(entries) - 1 else "├──"
             title = title_from_file(f)
             link = f"articles/{f.with_suffix('.html')}"
 
             html += (
                 "<div class='tree-file'>"
                 f"<span class='tree-branch'>{branch}</span> "
-                "<img src='/rarity.horse/theme/icons/file.png' alt='[f]'> "
-                f"<a href='/rarity.horse/{link}'>{title}</a>"
+                "<img src='./theme/icons/file.png' alt='[f]'> "
+                f"<a href='./{link}'>{title}</a>"
+                f"<span class='tree-date'> · {date}</span>"
                 "</div>"
             )
 
@@ -110,7 +112,7 @@ def load_buttons():
 # --- Build index ---
 index_html = render(
     base,
-    title="Articles",
+    title="rarity.horse",
     content=(
         render(tree_tpl, tree=build_ascii_tree(tree))
         + load_buttons()
