@@ -1,4 +1,4 @@
-# ✦ ![Rarity](./theme/icons/rarity.png) Rarity.Horse Engine ✦
+# <p align="center">✦ ![Rarity](./theme/icons/rarity.png) Rarity.Horse Engine ✦</p>
 
 A handcrafted, static, Markdown-driven website generation engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
@@ -10,7 +10,7 @@ No runtime dependencies.
 Built automatically with GitHub Actions.  
 Served via GitHub Pages.
 
-![Preview](.github/preview.png)
+<p align="center">![Preview](.github/preview.png)</p>
 
 ---
 
