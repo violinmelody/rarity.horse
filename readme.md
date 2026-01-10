@@ -10,6 +10,8 @@ No runtime dependencies.
 Built automatically with GitHub Actions.  
 Served via GitHub Pages.
 
+![Preview](.github/preview.png)
+
 ---
 
 ## Features
