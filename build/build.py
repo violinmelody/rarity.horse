@@ -85,7 +85,7 @@ def build_ascii_tree(tree):
             branch = "└──" if is_last else "├──"
 
             title = title_from_file(f)
-            link = f"/articles/{f.with_suffix('.html')}"
+            link = f"articles/{f.with_suffix('.html')}"
 
             html += (
                 "<div class='tree-file'>"
