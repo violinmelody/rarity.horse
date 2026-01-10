@@ -75,7 +75,7 @@ def build_ascii_tree(tree):
     for category, files in sorted(tree.items()):
         html += (
             "<div class='tree-folder'>"
-            "<img src='/theme/icons/folder.png' alt='[+]'> "
+            "<img src='./theme/icons/folder.png' alt='[+]'> "
             f"{category}"
             "</div>"
         )
@@ -90,8 +90,8 @@ def build_ascii_tree(tree):
             html += (
                 "<div class='tree-file'>"
                 f"<span class='tree-branch'>{branch}</span> "
-                "<img src='/theme/icons/file.png' alt='[f]'> "
-                f"<a href='{link}'>{title}</a>"
+                "<img src='./theme/icons/file.png' alt='[f]'> "
+                f"<a href='./{link}'>{title}</a>"
                 "</div>"
             )
 
