@@ -101,10 +101,44 @@ a:hover {
   text-decoration: underline;
 }
 
+.buttons {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px dashed var(--border);
+  text-align: center;
+}
+
+.buttons img {
+  width: 88px;
+  height: 31px;
+  margin: 4px;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.buttons a:hover img {
+  border-color: var(--accent);
+}
+
 footer {
   border-top: 2px solid var(--border);
   text-align: center;
   padding: 1rem;
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+footer .powered {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+footer .powered a {
+  color: var(--muted);
+}
+
+footer .powered a:hover {
+  color: var(--accent);
 }

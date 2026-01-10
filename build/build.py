@@ -5,6 +5,7 @@ import markdown
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = Path("content/articles")
+META = Path("content/meta")
 OUT = ROOT / "wwwroot"
 THEME = ROOT / "theme"
 TEMPLATES = ROOT / "templates"
@@ -59,7 +60,7 @@ for md_file in CONTENT.rglob("*.md"):
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(full_html)
 
-    # Copy images
+    # Copy article images
     img_dir = md_file.with_suffix("")
     if img_dir.exists():
         shutil.copytree(
@@ -81,9 +82,7 @@ def build_ascii_tree(tree):
         )
 
         for i, f in enumerate(sorted(files)):
-            is_last = i == len(files) - 1
-            branch = "└──" if is_last else "├──"
-
+            branch = "└──" if i == len(files) - 1 else "├──"
             title = title_from_file(f)
             link = f"articles/{f.with_suffix('.html')}"
 
@@ -98,13 +97,35 @@ def build_ascii_tree(tree):
     html += "</div>"
     return html
 
+# --- Load 88x31 buttons ---
+def load_buttons():
+    buttons_md = META / "buttons.md"
+    if not buttons_md.exists():
+        return ""
+
+    html = md.convert(buttons_md.read_text())
+    md.reset()
+    return f"<section class='buttons'>{html}</section>"
+
+# --- Build index ---
 index_html = render(
     base,
     title="Articles",
-    content=render(tree_tpl, tree=build_ascii_tree(tree))
+    content=(
+        render(tree_tpl, tree=build_ascii_tree(tree))
+        + load_buttons()
+    )
 )
 
 (OUT / "index.html").write_text(index_html)
 
-# Copy theme
+# --- Copy meta assets (buttons images) ---
+if (META / "buttons").exists():
+    shutil.copytree(
+        META / "buttons",
+        OUT / "buttons",
+        dirs_exist_ok=True
+    )
+
+# --- Copy theme ---
 shutil.copytree(THEME, OUT / "theme", dirs_exist_ok=True)
