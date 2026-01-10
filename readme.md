@@ -1,4 +1,4 @@
-# ✦ Rarity ✦
+# ✦ ![Rarity](./theme/icons/rarity.png) Rarity.Horse Engine ✦
 
 A handcrafted, static, Markdown-driven website generation engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
