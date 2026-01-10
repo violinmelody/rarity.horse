@@ -216,13 +216,12 @@ When forked:
 
 - No content is included
 - `example-content/` shows the expected structure
-- You must provide their own content repository or local `content/` directory
+- You must provide your own content repository or local `content/` directory
 
 ---
 
 ## License
 
-💎 Do whatever you want
-Just keep it elegant 💎
+💎 Do whatever you want, just keep it elegant 💎
 
 ---
