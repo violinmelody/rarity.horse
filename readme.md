@@ -55,11 +55,18 @@ The content repository must expose the following structure:
 
 ```text
 content/
-└─ articles/
-   └─ category/
-      ├─ article.md
-      └─ article/
-         └─ image.png
+├─ articles/
+│  └─ category/
+│     ├─ article.md
+│     └─ article/
+│        └─ image.png
+│
+└─ meta/
+   ├─ buttons.md
+   └─ buttons/
+      ├─ button1.png
+      ├─ button2.png
+      └─ button3.png
 ```
 
 ### Content Rules
@@ -92,7 +99,7 @@ cp image.png content/articles/rarity/she_is_beautiful/
 ### Reference images in Markdown
 
 ```md
-![Dress](she_is_beautiful/dress.png)
+![Dress](./she_is_beautiful/dress.png)
 ```
 
 ---
@@ -224,4 +231,3 @@ When forked:
 
 💎 Do whatever you want, just keep it elegant 💎
 
----
