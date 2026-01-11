@@ -66,6 +66,8 @@ content/
 │        └─ image.png
 │
 └─ meta/
+   ├─ title.md
+   ├─ motd.md
    ├─ about.md
    ├─ buttons.md
    └─ buttons/
@@ -90,6 +92,8 @@ content/
 | buttons.md | Buttons section on the home page |
 | buttons | Buttons images |
 | about.md | About section on the home page |
+| motd.md | Site message under the title |
+| title.md | Site title |
 
 ---
 
