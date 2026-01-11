@@ -66,6 +66,7 @@ content/
 │        └─ image.png
 │
 └─ meta/
+   ├─ about.md
    ├─ buttons.md
    └─ buttons/
       ├─ button1.png
@@ -73,7 +74,7 @@ content/
       └─ button3.png
 ```
 
-### Content Rules
+### Articles Content Rules
 
 | Element | Meaning |
 |-------|--------|
@@ -81,6 +82,14 @@ content/
 | Markdown filename | Article title |
 | File modification time | Article date |
 | Matching folder | Images for that article |
+
+### Meta Content Rules
+
+| Element | Meaning |
+|-------|--------|
+| buttons.md | Buttons section on the home page |
+| buttons | Buttons images |
+| about.md | About section on the home page |
 
 ---
 
