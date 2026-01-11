@@ -1,3 +1,4 @@
+/* Default colours */
 :root {
   --bg: #f9f7fb;
   --panel: #ffffff;
@@ -58,6 +59,7 @@ main {
   padding: 2rem;
 }
 
+/* Article date (inside article page) */
 .date {
   color: var(--muted);
   font-size: 0.85rem;
@@ -68,22 +70,55 @@ img {
   max-width: 100%;
 }
 
+/* -----------------------------
+   About section
+   ----------------------------- */
+
+.about {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.about h2 {
+  margin-top: 0;
+  letter-spacing: 0.15em;
+}
+
+.about p {
+  line-height: 1.6;
+}
+
+/* -----------------------------
+   ASCII article tree
+   ----------------------------- */
+
 .tree {
   font-family: "Courier New", monospace;
   line-height: 1.6;
 }
 
 .tree-folder {
-  margin-top: 1rem;
+  margin-top: 1.2rem;
   font-weight: bold;
 }
 
 .tree-file {
   margin-left: 1.5rem;
+  white-space: nowrap;
 }
 
 .tree-branch {
   color: var(--muted);
+}
+
+/* Main-page article date (tree) */
+.tree-date {
+  color: var(--muted);
+  font-size: 0.7rem;
+  margin-left: 0.35rem;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 
 .tree img {
@@ -91,6 +126,10 @@ img {
   height: 16px;
   vertical-align: text-bottom;
 }
+
+/* -----------------------------
+   Links
+   ----------------------------- */
 
 a {
   color: var(--accent);
@@ -100,6 +139,28 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* -----------------------------
+   Back link on article pages
+   ----------------------------- */
+
+.back {
+  margin-top: 3rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.back a {
+  color: var(--muted);
+}
+
+.back a:hover {
+  color: var(--accent);
+}
+
+/* -----------------------------
+   88x31 buttons
+   ----------------------------- */
 
 .buttons {
   margin-top: 3rem;
@@ -120,6 +181,10 @@ a:hover {
 .buttons a:hover img {
   border-color: var(--accent);
 }
+
+/* -----------------------------
+   Footer
+   ----------------------------- */
 
 footer {
   border-top: 2px solid var(--border);

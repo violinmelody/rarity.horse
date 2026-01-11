@@ -15,7 +15,7 @@ md = markdown.Markdown(extensions=["extra"])
 def tpl(name):
     return (TEMPLATES / name).read_text()
 
-base = tpl("base.html")
+base_tpl = tpl("base.html")
 article_tpl = tpl("article.html")
 tree_tpl = tpl("tree.html")
 
@@ -52,7 +52,7 @@ for md_file in CONTENT.rglob("*.md"):
     )
 
     full_html = render(
-        base,
+        base_tpl,
         title=title,
         content=article_html
     )
@@ -77,7 +77,7 @@ def build_ascii_tree(tree):
     for category, entries in sorted(tree.items()):
         html += (
             "<div class='tree-folder'>"
-            "<img src='./theme/icons/folder.png' alt='[+]'> "
+            "<img src='theme/icons/folder.png' alt='[+]'> "
             f"{category}"
             "</div>"
         )
@@ -90,14 +90,24 @@ def build_ascii_tree(tree):
             html += (
                 "<div class='tree-file'>"
                 f"<span class='tree-branch'>{branch}</span> "
-                "<img src='./theme/icons/file.png' alt='[f]'> "
-                f"<a href='./{link}'>{title}</a>"
+                "<img src='theme/icons/file.png' alt='[f]'> "
+                f"<a href='{link}'>{title}</a>"
                 f"<span class='tree-date'> · {date}</span>"
                 "</div>"
             )
 
     html += "</div>"
     return html
+
+# --- Load About section ---
+def load_about():
+    about_md = META / "about.md"
+    if not about_md.exists():
+        return ""
+
+    html = md.convert(about_md.read_text())
+    md.reset()
+    return f"<section class='about'>{html}</section>"
 
 # --- Load 88x31 buttons ---
 def load_buttons():
@@ -111,10 +121,11 @@ def load_buttons():
 
 # --- Build index ---
 index_html = render(
-    base,
+    base_tpl,
     title="rarity.horse",
     content=(
-        render(tree_tpl, tree=build_ascii_tree(tree))
+        load_about()
+        + render(tree_tpl, tree=build_ascii_tree(tree))
         + load_buttons()
     )
 )
