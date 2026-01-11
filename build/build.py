@@ -10,7 +10,7 @@ OUT = ROOT / "wwwroot"
 THEME = ROOT / "theme"
 TEMPLATES = ROOT / "templates"
 
-MD_EXT = ["extra"]
+MD_EXT = ["extra", "sane_lists", "smarty"]
 
 # --- Load templates ---
 def tpl(name):
@@ -157,8 +157,7 @@ index_html = render(
     site_title=SITE_TITLE,
     site_motd=SITE_MOTD,
     content=(
-        f"<header><h1>{SITE_TITLE}</h1><p class='tagline'>{SITE_MOTD}</p></header>"
-        + load_about()
+        load_about()
         + render(tree_tpl, tree=build_main_tree(tree))
         + load_buttons()
     )
