@@ -3,8 +3,8 @@
   --panel: #ffffff;
   --border: #e2d8f1;
   --accent: #8b5fbf;
-  --accent-soft: rgba(139, 95, 191, 0.14);
-  --accent-glow: rgba(139, 95, 191, 0.55);
+  --accent-soft: rgba(139, 95, 191, 0.12);
+  --accent-glow: rgba(139, 95, 191, 0.45);
   --text: #2b223a;
   --muted: #6b5a85;
   --code-bg: #f4f2f8;
@@ -12,13 +12,12 @@
   --radius: 14px;
   --radius-sm: 8px;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
   --shadow-md: 0 18px 44px rgba(0,0,0,0.12);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --fast: 0.2s;
-  --med: 0.45s;
-  --slow: 1.8s;
+  --fast: 0.18s;
+  --med: 0.4s;
+  --slow: 2.4s;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,13 +26,12 @@
     --panel: #1e1b26;
     --border: #33284a;
     --accent: #c9a7ff;
-    --accent-soft: rgba(201, 167, 255, 0.16);
-    --accent-glow: rgba(201, 167, 255, 0.6);
+    --accent-soft: rgba(201, 167, 255, 0.14);
+    --accent-glow: rgba(201, 167, 255, 0.55);
     --text: #e9e4f2;
     --muted: #a899c1;
     --code-bg: #1a1724;
 
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.35);
     --shadow-md: 0 24px 60px rgba(0,0,0,0.45);
   }
 }
@@ -58,50 +56,35 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  animation: page-enter var(--med) var(--ease);
-}
-
-@keyframes page-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------- HEADER ---------- */
 
 header {
   text-align: center;
-  padding: 2.8rem 1.5rem 2.2rem;
+  padding: 2.6rem 1.5rem 2.1rem;
 }
 
 header h1 {
   margin: 0;
-  font-size: 2.1rem;
+  font-size: 2.05rem;
   letter-spacing: 0.22em;
-  position: relative;
-  animation: title-glow 6s ease-in-out infinite;
-}
-
-header h1:hover {
-  text-shadow:
-    0 0 12px var(--accent-glow),
-    0 0 22px var(--accent-soft);
+  animation: title-glow 7s ease-in-out infinite;
 }
 
 @keyframes title-glow {
-  0%, 100% {
-    text-shadow: 0 0 0 rgba(0,0,0,0);
-  }
+  0%, 100% { text-shadow: none; }
   50% {
     text-shadow:
-      0 0 10px var(--accent-soft),
-      0 0 18px rgba(0,0,0,0.05);
+      0 0 14px var(--accent-soft),
+      0 0 22px rgba(0,0,0,0.04);
   }
 }
 
 .tagline {
   color: var(--muted);
   font-style: italic;
-  margin-top: 0.45rem;
+  margin-top: 0.4rem;
 }
 
 /* ---------- SECTIONS ---------- */
@@ -127,16 +110,14 @@ article,
 
 @keyframes content-fade {
   from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .markdown h1 { font-size: 2rem; }
 .markdown h2 { font-size: 1.55rem; }
 .markdown h3 { font-size: 1.25rem; }
 
-.markdown p {
-  margin: 0.75rem 0;
-}
+.markdown p { margin: 0.75rem 0; }
 
 .markdown blockquote {
   margin: 1.4rem 0;
@@ -160,13 +141,12 @@ article,
   overflow-x: auto;
 }
 
-/* ---------- LINKS (RESTORED HOVER MAGIC) ---------- */
+/* ---------- LINKS ---------- */
 
 a {
   color: var(--accent);
   text-decoration: none;
   position: relative;
-  transition: color var(--fast) var(--ease);
 }
 
 a::after {
@@ -196,53 +176,34 @@ a:hover::after {
 
 .tree-folder {
   margin-top: 1.2rem;
-  padding: 0.45rem 0.6rem;
+  padding: 0.35rem 0.2rem;
   font-weight: bold;
 }
 
 .tree-file {
   margin-left: 1.8rem;
-  padding: 0.35rem 0.6rem;
+  padding: 0.35rem 0.4rem;
   border-radius: 6px;
   position: relative;
-  transition:
-    background var(--fast) var(--ease),
-    transform var(--fast) var(--ease);
+  transition: background var(--fast) var(--ease);
 }
 
-.tree-folder:hover,
 .tree-file:hover {
-  background: var(--accent-soft);
-  transform: translateX(3px);
-}
-
-.tree-file::after {
-  content: "";
-  position: absolute;
-  inset: -20%;
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255,255,255,0.35),
-    transparent 70%
-  );
-  background-size: 200% 100%;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.tree-file:hover::after {
-  opacity: 1;
+  background:
+    linear-gradient(
+      110deg,
+      var(--accent-soft),
+      transparent 65%
+    );
   animation: tree-shimmer var(--slow) linear infinite;
 }
 
 @keyframes tree-shimmer {
-  from { background-position: -250% 0; }
-  to   { background-position: 250% 0; }
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
 }
 
 .tree-file a {
-  position: relative;
   z-index: 1;
 }
 
@@ -271,18 +232,15 @@ a:hover::after {
   margin: 6px;
   image-rendering: pixelated;
   border-radius: 4px;
-  box-shadow: var(--shadow-sm);
-  transition:
-    transform var(--fast) var(--ease),
-    box-shadow var(--fast) var(--ease);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: transform var(--fast) var(--ease);
 }
 
 .buttons a:hover img {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
 }
 
-/* ---------- ARTICLE META ---------- */
+/* ---------- META ---------- */
 
 .date {
   font-size: 0.85rem;
@@ -309,7 +267,7 @@ footer {
 
 @media (max-width: 768px) {
   body { padding: 1rem; }
-  header h1 { font-size: 1.6rem; }
+  header h1 { font-size: 1.55rem; }
   main, .about, article, .category { padding: 1.3rem; }
 }
 
