@@ -31,7 +31,6 @@ tree = {}
 
 OUT.mkdir(exist_ok=True)
 
-# --- Build articles ---
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     category = rel.parent.as_posix()
@@ -48,7 +47,7 @@ for md_file in CONTENT.rglob("*.md"):
         article_tpl,
         article_title=title,
         article_date=date,
-        article_body=html_body
+        article_body=f"<div class='markdown'>{html_body}</div>"
     )
 
     full_html = render(
@@ -70,7 +69,6 @@ for md_file in CONTENT.rglob("*.md"):
             dirs_exist_ok=True
         )
 
-# --- ASCII tree builder ---
 def build_ascii_tree(tree):
     html = "<div class='tree'>"
 
@@ -99,7 +97,6 @@ def build_ascii_tree(tree):
     html += "</div>"
     return html
 
-# --- Load About section ---
 def load_about():
     about_md = META / "about.md"
     if not about_md.exists():
@@ -107,9 +104,8 @@ def load_about():
 
     html = md.convert(about_md.read_text())
     md.reset()
-    return f"<section class='about'>{html}</section>"
+    return f"<section class='about'><div class='markdown'>{html}</div></section>"
 
-# --- Load 88x31 buttons ---
 def load_buttons():
     buttons_md = META / "buttons.md"
     if not buttons_md.exists():
@@ -119,7 +115,6 @@ def load_buttons():
     md.reset()
     return f"<section class='buttons'>{html}</section>"
 
-# --- Build index ---
 index_html = render(
     base_tpl,
     title="rarity.horse",
@@ -132,7 +127,6 @@ index_html = render(
 
 (OUT / "index.html").write_text(index_html)
 
-# --- Copy meta assets (buttons images) ---
 if (META / "buttons").exists():
     shutil.copytree(
         META / "buttons",
@@ -140,5 +134,4 @@ if (META / "buttons").exists():
         dirs_exist_ok=True
     )
 
-# --- Copy theme ---
 shutil.copytree(THEME, OUT / "theme", dirs_exist_ok=True)

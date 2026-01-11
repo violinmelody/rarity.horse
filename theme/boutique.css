@@ -59,15 +59,43 @@ main {
   padding: 2rem;
 }
 
-/* Article date (inside article page) */
-.date {
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-bottom: 1.5rem;
+/* -----------------------------
+   Markdown typography
+   ----------------------------- */
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  margin-top: 2rem;
+  letter-spacing: 0.08em;
 }
 
-img {
-  max-width: 100%;
+.markdown p {
+  line-height: 1.7;
+  margin: 1rem 0;
+}
+
+.markdown ul {
+  padding-left: 1.5rem;
+}
+
+.markdown li {
+  margin: 0.4rem 0;
+}
+
+.markdown blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--muted);
+  font-style: italic;
+}
+
+.markdown code {
+  background: var(--bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-size: 0.9em;
 }
 
 /* -----------------------------
@@ -85,12 +113,18 @@ img {
   letter-spacing: 0.15em;
 }
 
-.about p {
-  line-height: 1.6;
+/* -----------------------------
+   Article meta
+   ----------------------------- */
+
+.date {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
 }
 
 /* -----------------------------
-   ASCII article tree
+   ASCII tree
    ----------------------------- */
 
 .tree {
@@ -105,20 +139,17 @@ img {
 
 .tree-file {
   margin-left: 1.5rem;
-  white-space: nowrap;
 }
 
 .tree-branch {
   color: var(--muted);
 }
 
-/* Main-page article date (tree) */
 .tree-date {
   color: var(--muted);
   font-size: 0.7rem;
   margin-left: 0.35rem;
-  letter-spacing: 0.05em;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .tree img {
@@ -141,21 +172,13 @@ a:hover {
 }
 
 /* -----------------------------
-   Back link on article pages
+   Back link
    ----------------------------- */
 
 .back {
   margin-top: 3rem;
   font-size: 0.8rem;
   color: var(--muted);
-}
-
-.back a {
-  color: var(--muted);
-}
-
-.back a:hover {
-  color: var(--accent);
 }
 
 /* -----------------------------
@@ -198,12 +221,4 @@ footer .powered {
   margin-top: 0.4rem;
   font-size: 0.75rem;
   opacity: 0.75;
-}
-
-footer .powered a {
-  color: var(--muted);
-}
-
-footer .powered a:hover {
-  color: var(--accent);
 }
