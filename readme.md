@@ -8,14 +8,14 @@ A handcrafted, static, Markdown-driven website generation engine inspired by
 90s personal pages, demoscene aesthetics and Rarity's elegance.
 </p>
 
+# <p align="center">![Preview](.github/preview.png)</p>
+
 No JavaScript.  
 No trackers.  
 No runtime dependencies.
 
 Built automatically with GitHub Actions.  
 Served via GitHub Pages.
-
-# <p align="center">![Preview](.github/preview.png)</p>
 
 ---
 
@@ -27,7 +27,7 @@ Served via GitHub Pages.
 - Per-article image folders
 - ASCII tree index
 - Folder & file icons
-- Automatic dark mode
+- Automatic dark/light mode
 - Extremely fast (pure HTML + CSS)
 
 ---
@@ -50,6 +50,7 @@ This project is intentionally split into **two repositories**:
 - Contains:
   - Markdown articles
   - Images
+  - Site setup (title, motd, about & buttons sections)
 
 The engine **consumes content at build time** via GitHub Actions.  
 Content is never committed to this repository.
