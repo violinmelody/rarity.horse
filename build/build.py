@@ -1,4 +1,5 @@
 import shutil
+import subprocess
 from pathlib import Path
 from datetime import datetime
 import markdown
@@ -43,6 +44,24 @@ def load_meta_file(name, default=""):
 SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
 
+# --- Git commit date helper (for content repo) ---
+def git_commit_date(file_path):
+    """
+    Returns the ISO date of the last git commit for a file.
+    Falls back to filesystem mtime if git fails.
+    """
+    try:
+        ts = subprocess.check_output(
+            ["git", "log", "-1", "--format=%ct", "--", str(file_path)],
+            cwd=CONTENT,
+            text=True
+        ).strip()
+        if ts:
+            return datetime.fromtimestamp(int(ts)).strftime("%Y-%m-%d")
+    except subprocess.CalledProcessError:
+        pass
+    return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
+
 # --- Prepare output folder ---
 tree = {}
 OUT.mkdir(exist_ok=True)
@@ -52,7 +71,7 @@ for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     category = rel.parent.as_posix() or "."
 
-    date = datetime.fromtimestamp(md_file.stat().st_mtime).strftime("%Y-%m-%d")
+    date = git_commit_date(md_file)
     tree.setdefault(category, []).append((rel, date))
 
     html_body = render_md(md_file.read_text())

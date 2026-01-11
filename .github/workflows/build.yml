@@ -1,4 +1,4 @@
-# rarity-engine/.github/workflows/build.yml
+# rarity.horse/.github/workflows/build.yml
 name: Build & Deploy
 
 on:
@@ -25,13 +25,14 @@ jobs:
           repository: violinmelody/rarity.content
           path: content
           token: ${{ secrets.RARITY_CONTENT_REPO_TOKEN }}
+          fetch-depth: 0   # full history needed for git_commit_date
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install deps
+      - name: Install dependencies
         run: pip install markdown
 
       - name: Build site
