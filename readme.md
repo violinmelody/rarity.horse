@@ -1,7 +1,7 @@
 # <p align="center">✦ ![Rarity](./theme/icons/rarity.png) Rarity.Horse Engine ✦</p>
 
 [![Build](https://github.com/violinmelody/rarity.horse/actions/workflows/build.yml/badge.svg)](https://github.com/violinmelody/rarity.horse/actions/workflows/build.yml)
-[![Pages](https://img.shields.io/github/deployments/violinmelody/rarity.horse/github-pages?label=pages&logo=github&style=flat-square)](https://rarity.horse/)
+[![Pages](https://img.shields.io/github/deployments/violinmelody/rarity.horse/github-pages?label=pages&logo=github)](https://rarity.horse/)
 
 <p align="center">
 A handcrafted, static, Markdown-driven website generation engine inspired by  
