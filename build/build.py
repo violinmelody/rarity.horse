@@ -82,7 +82,7 @@ def build_tree_for(entries, base_link="articles/"):
         html += (
             "<div class='tree-file'>"
             f"<span class='tree-branch'>{branch}</span> "
-            "<img src='../theme/icons/file.png' alt='[f]'> "
+            "<img src='/theme/icons/file.png' alt='[f]'> "
             f"<a href='/{link}'>{title}</a>"
             f"<span class='tree-date'> · {date}</span>"
             "</div>"
@@ -96,7 +96,7 @@ def build_main_tree(tree):
     for category, entries in sorted(tree.items()):
         html += (
             "<div class='tree-folder'>"
-            "<img src='theme/icons/folder.png' alt='[+]'> "
+            "<img src='/theme/icons/folder.png' alt='[+]'> "
             f"<a href='articles/{category}/index.html'>{category}</a>"
             "</div>"
         )
@@ -131,7 +131,13 @@ def load_about():
         return ""
 
     html = render_md(about_md.read_text())
-    return f"<section class='about'><div class='markdown'>{html}</div></section>"
+    return (
+        "<section class='about'>\n"
+        "<div class='markdown'>\n"
+        f"{html}\n"
+        "</div>\n"
+        "</section>\n"
+    )
 
 def load_buttons():
     buttons_md = META / "buttons.md"
@@ -139,7 +145,11 @@ def load_buttons():
         return ""
 
     html = render_md(buttons_md.read_text())
-    return f"<section class='buttons'>{html}</section>"
+    return (
+        "<section class='buttons'>\n"
+        f"{html}\n"
+        "</section>\n"
+    )
 
 index_html = render(
     base_tpl,
