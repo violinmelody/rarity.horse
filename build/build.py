@@ -1,7 +1,7 @@
 import shutil
+import subprocess
 from pathlib import Path
 from datetime import datetime
-import subprocess
 import markdown
 
 # --- Paths ---
@@ -12,6 +12,7 @@ OUT = ROOT / "wwwroot"
 THEME = ROOT / "theme"
 TEMPLATES = ROOT / "templates"
 
+# --- Markdown extensions ---
 MD_EXT = ["extra", "sane_lists", "smarty"]
 
 # --- Load templates ---
@@ -29,27 +30,47 @@ def render(t, **ctx):
         t = t.replace("{{ " + k + " }}", v)
     return t
 
-# --- Utilities ---
-def title_from_file(p: Path):
+# --- Helpers ---
+def title_from_file(p):
     return p.stem.replace("_", " ").title()
 
 def render_md(text):
     return markdown.markdown(text, extensions=MD_EXT)
 
+# --- Git commit date helper ---
 def git_commit_date(file_path: Path):
-    """Get last commit date for a file, fallback to filesystem mtime."""
+    """
+    Returns the last commit date of a file as YYYY-MM-DD.
+    Falls back to filesystem mod time if git info is missing.
+    """
     try:
+        # Get the git repo root
+        repo_root = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=file_path.parent,
+            capture_output=True,
+            text=True,
+            check=True
+        ).stdout.strip()
+
+        # Get last commit date for the file
         result = subprocess.run(
-            ["git", "log", "-1", "--format=%ad", "--date=short", str(file_path)],
+            ["git", "log", "-1", "--format=%cI", "--", str(file_path.relative_to(repo_root))],
+            cwd=repo_root,
             capture_output=True,
             text=True,
             check=True
         )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
+        date_str = result.stdout.strip()
+        if date_str:
+            return datetime.fromisoformat(date_str).strftime("%Y-%m-%d")
+    except Exception:
+        pass
 
-# --- Site metadata ---
+    # fallback to filesystem mtime
+    return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
+
+# --- Site-wide metadata ---
 def load_meta_file(name, default=""):
     f = META / name
     if f.exists():
@@ -68,9 +89,8 @@ for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     category = rel.parent.as_posix() or "."
 
-    # Get date from git commit
+    # Use Git commit date
     date = git_commit_date(md_file)
-
     tree.setdefault(category, []).append((rel, date))
 
     html_body = render_md(md_file.read_text())
@@ -95,7 +115,7 @@ for md_file in CONTENT.rglob("*.md"):
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(full_html)
 
-    # Copy images if folder exists
+    # Copy images if they exist
     img_dir = md_file.with_suffix("")
     if img_dir.exists():
         shutil.copytree(
@@ -153,7 +173,7 @@ for category, entries in tree.items():
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
-# --- About & Buttons ---
+# --- About & buttons ---
 def load_about():
     about_md = META / "about.md"
     if not about_md.exists():
