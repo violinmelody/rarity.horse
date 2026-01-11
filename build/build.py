@@ -10,7 +10,7 @@ OUT = ROOT / "wwwroot"
 THEME = ROOT / "theme"
 TEMPLATES = ROOT / "templates"
 
-md = markdown.Markdown(extensions=["extra"])
+MD_EXT = ["extra"]
 
 def tpl(name):
     return (TEMPLATES / name).read_text()
@@ -18,6 +18,7 @@ def tpl(name):
 base_tpl = tpl("base.html")
 article_tpl = tpl("article.html")
 tree_tpl = tpl("tree.html")
+category_tpl = tpl("category.html")
 
 def render(t, **ctx):
     for k, v in ctx.items():
@@ -27,20 +28,21 @@ def render(t, **ctx):
 def title_from_file(p):
     return p.stem.replace("_", " ").title()
 
+def render_md(text):
+    return markdown.markdown(text, extensions=MD_EXT)
+
 tree = {}
 
 OUT.mkdir(exist_ok=True)
 
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
-    category = rel.parent.as_posix()
+    category = rel.parent.as_posix() or "."
 
     date = datetime.fromtimestamp(md_file.stat().st_mtime).strftime("%Y-%m-%d")
     tree.setdefault(category, []).append((rel, date))
 
-    html_body = md.convert(md_file.read_text())
-    md.reset()
-
+    html_body = render_md(md_file.read_text())
     title = title_from_file(md_file)
 
     article_html = render(
@@ -69,41 +71,66 @@ for md_file in CONTENT.rglob("*.md"):
             dirs_exist_ok=True
         )
 
-def build_ascii_tree(tree):
+def build_tree_for(entries, base_link="articles/"):
+    html = ""
+
+    for i, (f, date) in enumerate(sorted(entries)):
+        branch = "└──" if i == len(entries) - 1 else "├──"
+        title = title_from_file(f)
+        link = f"{base_link}{f.with_suffix('.html')}"
+
+        html += (
+            "<div class='tree-file'>"
+            f"<span class='tree-branch'>{branch}</span> "
+            "<img src='../theme/icons/file.png' alt='[f]'> "
+            f"<a href='/{link}'>{title}</a>"
+            f"<span class='tree-date'> · {date}</span>"
+            "</div>"
+        )
+
+    return html
+
+def build_main_tree(tree):
     html = "<div class='tree'>"
 
     for category, entries in sorted(tree.items()):
         html += (
             "<div class='tree-folder'>"
             "<img src='theme/icons/folder.png' alt='[+]'> "
-            f"{category}"
+            f"<a href='articles/{category}/index.html'>{category}</a>"
             "</div>"
         )
 
-        for i, (f, date) in enumerate(sorted(entries)):
-            branch = "└──" if i == len(entries) - 1 else "├──"
-            title = title_from_file(f)
-            link = f"articles/{f.with_suffix('.html')}"
-
-            html += (
-                "<div class='tree-file'>"
-                f"<span class='tree-branch'>{branch}</span> "
-                "<img src='theme/icons/file.png' alt='[f]'> "
-                f"<a href='{link}'>{title}</a>"
-                f"<span class='tree-date'> · {date}</span>"
-                "</div>"
-            )
+        html += build_tree_for(entries)
 
     html += "</div>"
     return html
+
+for category, entries in tree.items():
+    category_title = category if category != "." else "Articles"
+
+    category_html = render(
+        category_tpl,
+        category_title=category_title,
+        category_tree=build_tree_for(entries, base_link="articles/")
+    )
+
+    full_html = render(
+        base_tpl,
+        title=f"{category_title} – rarity.horse",
+        content=category_html
+    )
+
+    out_dir = OUT / "articles" / category
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "index.html").write_text(full_html)
 
 def load_about():
     about_md = META / "about.md"
     if not about_md.exists():
         return ""
 
-    html = md.convert(about_md.read_text())
-    md.reset()
+    html = render_md(about_md.read_text())
     return f"<section class='about'><div class='markdown'>{html}</div></section>"
 
 def load_buttons():
@@ -111,8 +138,7 @@ def load_buttons():
     if not buttons_md.exists():
         return ""
 
-    html = md.convert(buttons_md.read_text())
-    md.reset()
+    html = render_md(buttons_md.read_text())
     return f"<section class='buttons'>{html}</section>"
 
 index_html = render(
@@ -120,7 +146,7 @@ index_html = render(
     title="rarity.horse",
     content=(
         load_about()
-        + render(tree_tpl, tree=build_ascii_tree(tree))
+        + render(tree_tpl, tree=build_main_tree(tree))
         + load_buttons()
     )
 )
