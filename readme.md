@@ -3,6 +3,10 @@
 <p align="center">
 A handcrafted, static, Markdown-driven website generation engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
+
+[![Build](https://github.com/violinmelody/rarity.horse/actions/workflows/build.yml/badge.svg)](https://github.com/violinmelody/rarity.horse/actions/workflows/build.yml)
+[![Pages](https://img.shields.io/github/deployments/violinmelody/rarity.horse/github-pages?label=pages&logo=github&style=flat-square)](https://rarity.horse/)
+
 </p>
 
 No JavaScript.  

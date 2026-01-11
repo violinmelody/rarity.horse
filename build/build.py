@@ -12,6 +12,7 @@ TEMPLATES = ROOT / "templates"
 
 MD_EXT = ["extra"]
 
+# --- Load templates ---
 def tpl(name):
     return (TEMPLATES / name).read_text()
 
@@ -20,6 +21,7 @@ article_tpl = tpl("article.html")
 tree_tpl = tpl("tree.html")
 category_tpl = tpl("category.html")
 
+# --- Simple template renderer ---
 def render(t, **ctx):
     for k, v in ctx.items():
         t = t.replace("{{ " + k + " }}", v)
@@ -31,14 +33,14 @@ def title_from_file(p):
 def render_md(text):
     return markdown.markdown(text, extensions=MD_EXT)
 
-# --- Read site-wide metadata ---
+# --- Site-wide metadata ---
 def load_meta_file(name, default=""):
     f = META / name
     if f.exists():
         return f.read_text().strip()
     return default
 
-SITE_TITLE = load_meta_file("title.md", "RARITY.HORSE")
+SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
 
 # --- Prepare output folder ---
@@ -133,13 +135,13 @@ for category, entries in tree.items():
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
-# --- About & buttons for main index ---
+# --- About & buttons ---
 def load_about():
     about_md = META / "about.md"
     if not about_md.exists():
         return ""
     html = render_md(about_md.read_text())
-    return f"<section class='about'><div class='markdown'>{html}</div></section>"
+    return f"<section class='about'><div class='markdown'>{html}</div></section>\n"
 
 def load_buttons():
     buttons_md = META / "buttons.md"
@@ -151,11 +153,12 @@ def load_buttons():
 # --- Main index ---
 index_html = render(
     base_tpl,
-    title=f"{SITE_TITLE}",
+    title=SITE_TITLE,
     site_title=SITE_TITLE,
     site_motd=SITE_MOTD,
     content=(
-        f"<section class='about'><div class='markdown'>{load_about()}</div></section>"
+        f"<header><h1>{SITE_TITLE}</h1><p class='tagline'>{SITE_MOTD}</p></header>"
+        + load_about()
         + render(tree_tpl, tree=build_main_tree(tree))
         + load_buttons()
     )
