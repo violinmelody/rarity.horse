@@ -1,8 +1,8 @@
 import shutil
 from pathlib import Path
 from datetime import datetime
-import subprocess
 import markdown
+import subprocess
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = Path("content/articles")
@@ -13,7 +13,6 @@ TEMPLATES = ROOT / "templates"
 
 MD_EXT = ["extra", "sane_lists", "smarty"]
 
-
 # --- Load templates ---
 def tpl(name):
     return (TEMPLATES / name).read_text()
@@ -23,55 +22,17 @@ article_tpl = tpl("article.html")
 tree_tpl = tpl("tree.html")
 category_tpl = tpl("category.html")
 
-
 # --- Simple template renderer ---
 def render(t, **ctx):
     for k, v in ctx.items():
         t = t.replace("{{ " + k + " }}", v)
     return t
 
-
 def title_from_file(p):
     return p.stem.replace("_", " ").title()
 
-
 def render_md(text):
     return markdown.markdown(text, extensions=MD_EXT)
-
-
-# --- Git commit date helper ---
-def git_commit_date(file_path: Path):
-    """
-    Returns last commit date of a file as YYYY-MM-DD.
-    Fallback to filesystem mtime.
-    """
-    try:
-        repo_root = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            cwd=file_path.parent,
-            capture_output=True,
-            text=True,
-            check=True
-        ).stdout.strip()
-
-        rel_path = file_path.relative_to(repo_root)
-
-        result = subprocess.run(
-            ["git", "log", "-1", "--format=%cI", "--", str(rel_path)],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        date_str = result.stdout.strip()
-        if date_str:
-            return datetime.fromisoformat(date_str).strftime("%Y-%m-%d")
-    except Exception:
-        pass
-
-    # fallback to file mtime
-    return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
-
 
 # --- Site-wide metadata ---
 def load_meta_file(name, default=""):
@@ -80,15 +41,28 @@ def load_meta_file(name, default=""):
         return f.read_text().strip()
     return default
 
-
 SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
-
 
 # --- Prepare output folder ---
 tree = {}
 OUT.mkdir(exist_ok=True)
 
+# --- Git commit date function ---
+def git_commit_date(file_path: Path):
+    """Return the last git commit date of a file in YYYY-MM-DD format."""
+    try:
+        out = subprocess.check_output(
+            ["git", "log", "-1", "--format=%cI", str(file_path)],
+            cwd=CONTENT,
+            text=True
+        ).strip()
+        if out:
+            return out[:10]  # Take YYYY-MM-DD
+    except Exception:
+        pass
+    # fallback to file modification time
+    return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
 
 # --- Process articles ---
 for md_file in CONTENT.rglob("*.md"):
@@ -129,7 +103,6 @@ for md_file in CONTENT.rglob("*.md"):
             dirs_exist_ok=True
         )
 
-
 # --- Tree helpers ---
 def build_tree_for(entries, base_link="articles/"):
     html = ""
@@ -147,7 +120,6 @@ def build_tree_for(entries, base_link="articles/"):
         )
     return html
 
-
 def build_main_tree(tree):
     html = "<div class='tree'>"
     for category, entries in sorted(tree.items()):
@@ -160,7 +132,6 @@ def build_main_tree(tree):
         html += build_tree_for(entries)
     html += "</div>"
     return html
-
 
 # --- Build category pages ---
 for category, entries in tree.items():
@@ -181,7 +152,6 @@ for category, entries in tree.items():
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
-
 # --- About & buttons ---
 def load_about():
     about_md = META / "about.md"
@@ -190,14 +160,12 @@ def load_about():
     html = render_md(about_md.read_text())
     return f"<section class='about'><div class='markdown'>{html}</div></section>\n"
 
-
 def load_buttons():
     buttons_md = META / "buttons.md"
     if not buttons_md.exists():
         return ""
     html = render_md(buttons_md.read_text())
     return f"<section class='buttons'>{html}</section>"
-
 
 # --- Main index ---
 index_html = render(
@@ -212,7 +180,6 @@ index_html = render(
     )
 )
 (OUT / "index.html").write_text(index_html)
-
 
 # --- Copy assets ---
 if (META / "buttons").exists():

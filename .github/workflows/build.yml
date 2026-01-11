@@ -1,4 +1,3 @@
-# rarity.horse/.github/workflows/build.yml
 name: Build & Deploy
 
 on:
@@ -25,7 +24,7 @@ jobs:
           repository: violinmelody/rarity.content
           path: content
           token: ${{ secrets.RARITY_CONTENT_REPO_TOKEN }}
-          fetch-depth: 0   # full history needed for git_commit_date
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
