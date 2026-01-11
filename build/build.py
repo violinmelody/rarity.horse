@@ -28,14 +28,14 @@ def render(t, **ctx):
         t = t.replace("{{ " + k + " }}", v)
     return t
 
-def title_from_file(p):
+def title_from_file(p: Path):
     return p.stem.replace("_", " ").title()
 
-def render_md(text):
+def render_md(text: str):
     return markdown.markdown(text, extensions=MD_EXT)
 
-# --- Site-wide metadata ---
-def load_meta_file(name, default=""):
+# --- Site metadata ---
+def load_meta_file(name: str, default=""):
     f = META / name
     if f.exists():
         return f.read_text().strip()
@@ -48,20 +48,19 @@ SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
 tree = {}
 OUT.mkdir(exist_ok=True)
 
-# --- Git commit date function ---
-def git_commit_date(file_path: Path):
+# --- Git commit date retrieval ---
+def git_commit_date(file_path: Path) -> str:
     """Return the last git commit date of a file in YYYY-MM-DD format."""
     try:
         out = subprocess.check_output(
-            ["git", "log", "-1", "--format=%cI", str(file_path)],
-            cwd=CONTENT,
+            ["git", "-C", str(CONTENT), "log", "origin/main", "-1", "--format=%cI", str(file_path.relative_to(CONTENT))],
             text=True
         ).strip()
         if out:
-            return out[:10]  # Take YYYY-MM-DD
+            return out[:10]  # YYYY-MM-DD
     except Exception:
         pass
-    # fallback to file modification time
+    # fallback to file modified date
     return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
 
 # --- Process articles ---

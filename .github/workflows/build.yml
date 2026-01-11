@@ -25,6 +25,7 @@ jobs:
           path: content
           token: ${{ secrets.RARITY_CONTENT_REPO_TOKEN }}
           fetch-depth: 0
+          ref: main
 
       - name: Setup Python
         uses: actions/setup-python@v5
