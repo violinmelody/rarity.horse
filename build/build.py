@@ -13,8 +13,9 @@ TEMPLATES = ROOT / "templates"
 
 MD_EXT = ["extra", "sane_lists", "smarty"]
 
-# --- Load templates ---
-def tpl(name):
+# ---------------- Templates ----------------
+
+def tpl(name: str) -> str:
     return (TEMPLATES / name).read_text()
 
 base_tpl = tpl("base.html")
@@ -22,48 +23,73 @@ article_tpl = tpl("article.html")
 tree_tpl = tpl("tree.html")
 category_tpl = tpl("category.html")
 
-# --- Simple template renderer ---
-def render(t, **ctx):
+def render(t: str, **ctx) -> str:
     for k, v in ctx.items():
         t = t.replace("{{ " + k + " }}", v)
     return t
 
-def title_from_file(p: Path):
-    return p.stem.replace("_", " ").title()
+# ---------------- Markdown ----------------
 
-def render_md(text: str):
+def render_md(text: str) -> str:
     return markdown.markdown(text, extensions=MD_EXT)
 
-# --- Site metadata ---
-def load_meta_file(name: str, default=""):
+def title_from_file(p: Path) -> str:
+    return p.stem.replace("_", " ").title()
+
+# ---------------- Meta ----------------
+
+def load_meta_file(name: str, default: str = "") -> str:
     f = META / name
-    if f.exists():
-        return f.read_text().strip()
-    return default
+    return f.read_text().strip() if f.exists() else default
 
 SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
 
-# --- Prepare output folder ---
-tree = {}
-OUT.mkdir(exist_ok=True)
+# ---------------- Theme selection ----------------
 
-# --- Git commit date retrieval ---
+def load_theme_css() -> str:
+    raw = load_meta_file("theme.md", "boutique").strip().lower()
+    if not raw:
+        raw = "boutique"
+
+    candidate = f"{raw}.css"
+    if (THEME / candidate).exists():
+        return candidate
+
+    return "boutique.css"
+
+THEME_CSS = load_theme_css()
+
+# ---------------- Output ----------------
+
+OUT.mkdir(exist_ok=True)
+tree = {}
+
+# ---------------- Git commit dates ----------------
+
 def git_commit_date(file_path: Path) -> str:
-    """Return the last git commit date of a file in YYYY-MM-DD format."""
     try:
         out = subprocess.check_output(
-            ["git", "-C", str(CONTENT), "log", "origin/main", "-1", "--format=%cI", str(file_path.relative_to(CONTENT))],
-            text=True
+            [
+                "git",
+                "-C",
+                str(CONTENT),
+                "log",
+                "-1",
+                "--format=%cI",
+                str(file_path.relative_to(CONTENT)),
+            ],
+            text=True,
         ).strip()
         if out:
-            return out[:10]  # YYYY-MM-DD
+            return out[:10]
     except Exception:
         pass
-    # fallback to file modified date
+
     return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
 
-# --- Process articles ---
+# ---------------- Articles ----------------
+
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     category = rel.parent.as_posix() or "."
@@ -78,7 +104,7 @@ for md_file in CONTENT.rglob("*.md"):
         article_tpl,
         article_title=title,
         article_date=date,
-        article_body=f"<div class='markdown'>{html_body}</div>"
+        article_body=f"<div class='markdown'>{html_body}</div>",
     )
 
     full_html = render(
@@ -86,24 +112,21 @@ for md_file in CONTENT.rglob("*.md"):
         title=f"{title} – {SITE_TITLE}",
         site_title=SITE_TITLE,
         site_motd=SITE_MOTD,
-        content=article_html
+        theme_css=THEME_CSS,
+        content=article_html,
     )
 
     out_file = OUT / "articles" / rel.with_suffix(".html")
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(full_html)
 
-    # Copy images if they exist
     img_dir = md_file.with_suffix("")
     if img_dir.exists():
-        shutil.copytree(
-            img_dir,
-            out_file.parent / img_dir.name,
-            dirs_exist_ok=True
-        )
+        shutil.copytree(img_dir, out_file.parent / img_dir.name, dirs_exist_ok=True)
 
-# --- Tree helpers ---
-def build_tree_for(entries, base_link="articles/"):
+# ---------------- Tree helpers ----------------
+
+def build_tree_for(entries, base_link="articles/") -> str:
     html = ""
     for i, (f, date) in enumerate(sorted(entries)):
         branch = "└──" if i == len(entries) - 1 else "├──"
@@ -119,7 +142,7 @@ def build_tree_for(entries, base_link="articles/"):
         )
     return html
 
-def build_main_tree(tree):
+def build_main_tree(tree) -> str:
     html = "<div class='tree'>"
     for category, entries in sorted(tree.items()):
         html += (
@@ -132,55 +155,62 @@ def build_main_tree(tree):
     html += "</div>"
     return html
 
-# --- Build category pages ---
+# ---------------- Categories ----------------
+
 for category, entries in tree.items():
-    category_title = category if category != "." else "Articles"
+    title = category if category != "." else "Articles"
+
     category_html = render(
         category_tpl,
-        category_title=category_title,
-        category_tree=build_tree_for(entries, base_link="articles/")
+        category_title=title,
+        category_tree=build_tree_for(entries),
     )
+
     full_html = render(
         base_tpl,
-        title=f"{category_title} – {SITE_TITLE}",
+        title=f"{title} – {SITE_TITLE}",
         site_title=SITE_TITLE,
         site_motd=SITE_MOTD,
-        content=category_html
+        theme_css=THEME_CSS,
+        content=category_html,
     )
+
     out_dir = OUT / "articles" / category
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
-# --- About & buttons ---
-def load_about():
-    about_md = META / "about.md"
-    if not about_md.exists():
-        return ""
-    html = render_md(about_md.read_text())
-    return f"<section class='about'><div class='markdown'>{html}</div></section>\n"
+# ---------------- Index ----------------
 
-def load_buttons():
-    buttons_md = META / "buttons.md"
-    if not buttons_md.exists():
+def load_about() -> str:
+    f = META / "about.md"
+    if not f.exists():
         return ""
-    html = render_md(buttons_md.read_text())
-    return f"<section class='buttons'>{html}</section>"
+    return f"<section class='about'><div class='markdown'>{render_md(f.read_text())}</div></section>"
 
-# --- Main index ---
+def load_buttons() -> str:
+    f = META / "buttons.md"
+    if not f.exists():
+        return ""
+    return f"<section class='buttons'>{render_md(f.read_text())}</section>"
+
 index_html = render(
     base_tpl,
     title=SITE_TITLE,
     site_title=SITE_TITLE,
     site_motd=SITE_MOTD,
+    theme_css=THEME_CSS,
     content=(
         load_about()
         + render(tree_tpl, tree=build_main_tree(tree))
         + load_buttons()
-    )
+    ),
 )
+
 (OUT / "index.html").write_text(index_html)
 
-# --- Copy assets ---
+# ---------------- Assets ----------------
+
 if (META / "buttons").exists():
     shutil.copytree(META / "buttons", OUT / "buttons", dirs_exist_ok=True)
+
 shutil.copytree(THEME, OUT / "theme", dirs_exist_ok=True)
