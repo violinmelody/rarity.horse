@@ -6,6 +6,10 @@
   --text: #2b223a;
   --muted: #6b5a85;
   --code-bg: #f4f2f8;
+
+  /* ICONS */
+  --icon-file: url("/theme/icons/file_gem.png");
+  --icon-folder: url("/theme/icons/folder_purple.png");
 }
 
 @media (prefers-color-scheme: dark) {

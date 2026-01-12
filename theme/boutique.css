@@ -18,6 +18,10 @@
   --fast: 0.18s;
   --med: 0.4s;
   --slow: 2.4s;
+
+  /* ICONS */
+  --icon-file: url("/theme/icons/file_gem.png");
+  --icon-folder: url("/theme/icons/folder_purple.png");
 }
 
 @media (prefers-color-scheme: dark) {

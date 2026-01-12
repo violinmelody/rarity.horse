@@ -10,6 +10,10 @@
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --anim-fast: 0.18s;
   --anim-med: 0.35s;
+
+  /* ICONS */
+  --icon-file: url("/theme/icons/file_gem.png");
+  --icon-folder: url("/theme/icons/folder_purple.png");
 }
 
 @media (prefers-color-scheme: dark) {
