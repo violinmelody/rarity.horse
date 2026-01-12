@@ -260,5 +260,5 @@ When forked:
 
 ## License
 
-💎 Do whatever you want, just keep it elegant 💎
+💎 [Do whatever you want, just keep it elegant](https://github.com/violinmelody/rarity.horse/blob/main/LICENSE) 💎
 
