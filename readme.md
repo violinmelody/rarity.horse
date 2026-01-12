@@ -6,7 +6,7 @@
 <p align="center">
 A handcrafted, static, Markdown-driven website generation engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
-See the live demo on [rarity.horse](https://rarity.horse/).
+See the live demo on https://rarity.horse/
 </p>
 
 # <p align="center">![Preview](.github/preview.png)</p>
