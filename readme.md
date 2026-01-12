@@ -28,7 +28,8 @@ Served via GitHub Pages.
 - ASCII tree index
 - Folder & file icons
 - Automatic dark/light mode
-- Extremely fast (pure HTML + CSS)
+- Beautiful yet extremely fast (pure HTML + CSS)
+- Different themes
 
 ---
 
@@ -41,7 +42,7 @@ This project is intentionally split into **two repositories**:
 - Contains:
   - Static site generator
   - HTML templates
-  - CSS theme and icons
+  - CSS themes and icons
   - GitHub Actions workflow
 
 ### 2. Content Repository
@@ -51,6 +52,7 @@ This project is intentionally split into **two repositories**:
   - Markdown articles
   - Images
   - Site setup (title, motd, about & buttons sections)
+  - Dispatch job
 
 The engine **consumes content at build time** via GitHub Actions.  
 Content is never committed to this repository.
@@ -73,6 +75,7 @@ content/
    ├─ title.md
    ├─ motd.md
    ├─ about.md
+   ├─ theme.md
    ├─ buttons.md
    └─ buttons/
       ├─ button1.png
