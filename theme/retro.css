@@ -1,0 +1,240 @@
+:root {
+  --bg: #008080;
+  --panel: #c0c0c0;
+  --panel-light: #dfdfdf;
+  --panel-dark: #808080;
+
+  --border-dark: #404040;
+  --border-light: #ffffff;
+
+  --text: #000000;
+  --muted: #404040;
+  --accent: #000080;
+
+  --code-bg: #ffffff;
+
+  --font-ui: "MS Sans Serif", Tahoma, Arial, sans-serif;
+  --font-mono: "Courier New", monospace;
+
+  --icon-file: url("/theme/icons/file.png");
+  --icon-folder: url("/theme/icons/folder.png");
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: var(--panel);
+  border: 2px solid var(--border-dark);
+  border-top-color: var(--border-light);
+  border-left-color: var(--border-light);
+}
+
+/* ---------- HEADER ---------- */
+
+header {
+  padding: 12px;
+  background: linear-gradient(
+    to bottom,
+    #000080,
+    #000060
+  );
+  color: #ffffff;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+}
+
+.tagline {
+  margin-top: 4px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* ---------- PANELS ---------- */
+
+main,
+.about,
+.buttons,
+article,
+.category {
+  padding: 14px;
+  background: var(--panel);
+  border-top: 2px solid var(--border-light);
+  border-left: 2px solid var(--border-light);
+  border-right: 2px solid var(--border-dark);
+  border-bottom: 2px solid var(--border-dark);
+  margin: 12px;
+}
+
+/* ---------- MARKDOWN ---------- */
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-size: 16px;
+  margin: 12px 0 6px;
+}
+
+.markdown p {
+  margin: 6px 0;
+}
+
+.markdown blockquote {
+  margin: 10px 0;
+  padding: 8px 10px;
+  background: var(--panel-light);
+  border: 1px solid var(--border-dark);
+  font-style: italic;
+}
+
+.markdown code {
+  background: var(--code-bg);
+  border: 1px solid var(--border-dark);
+  padding: 1px 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.markdown pre {
+  background: var(--code-bg);
+  border: 2px inset var(--panel);
+  padding: 8px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* ---------- LINKS ---------- */
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #ff0000;
+}
+
+/* ---------- TREE VIEW ---------- */
+
+.tree {
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.tree-folder {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.tree-file {
+  margin-left: 22px;
+  white-space: nowrap;
+}
+
+.tree-branch {
+  color: #404040;
+}
+
+.tree-date {
+  color: #404040;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+.tree img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+  content: var(--icon-file);
+}
+
+.tree-folder img {
+  content: var(--icon-folder);
+}
+
+/* ---------- BUTTONS ---------- */
+
+.buttons {
+  text-align: center;
+}
+
+.buttons img {
+  width: 88px;
+  height: 31px;
+  margin: 4px;
+  image-rendering: pixelated;
+  border: 2px outset var(--panel);
+  background: var(--panel);
+}
+
+.buttons a:active img {
+  border: 2px inset var(--panel);
+}
+
+/* ---------- META ---------- */
+
+.date {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.back {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+/* ---------- FOOTER ---------- */
+
+footer {
+  margin: 12px;
+  padding: 8px;
+  background: var(--panel);
+  border: 2px inset var(--panel);
+  font-size: 11px;
+  text-align: center;
+}
+
+footer .powered {
+  margin-top: 4px;
+}
+
+/* ---------- MOBILE (best effort) ---------- */
+
+@media (max-width: 768px) {
+  body {
+    padding: 8px;
+  }
+
+  header h1 {
+    font-size: 16px;
+  }
+
+  main,
+  .about,
+  article,
+  .category,
+  footer {
+    margin: 6px;
+    padding: 10px;
+  }
+}
