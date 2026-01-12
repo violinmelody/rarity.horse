@@ -179,6 +179,11 @@ article {
   width: 16px;
   height: 16px;
   vertical-align: text-bottom;
+  content: var(--icon-file);
+}
+
+.tree-folder img {
+  content: var(--icon-folder);
 }
 
 /* --- LINKS --- */

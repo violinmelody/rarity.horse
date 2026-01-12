@@ -256,6 +256,11 @@ a:hover::after {
   height: 16px;
   vertical-align: text-bottom;
   margin-right: 4px;
+  content: var(--icon-file);
+}
+
+.tree-folder img {
+  content: var(--icon-folder);
 }
 
 /* ---------------- Buttons ---------------- */

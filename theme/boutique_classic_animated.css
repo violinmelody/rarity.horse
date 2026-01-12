@@ -193,6 +193,11 @@ article,
   height: 16px;
   vertical-align: text-bottom;
   transition: transform var(--anim-fast) var(--ease-soft);
+  content: var(--icon-file);
+}
+
+.tree-folder img {
+  content: var(--icon-folder);
 }
 
 .tree-folder:hover img,
