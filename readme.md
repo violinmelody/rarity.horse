@@ -98,9 +98,13 @@ content/
 |-------|--------|
 | buttons.md | Buttons section on the home page |
 | buttons | Buttons images |
+| theme.md | Site CSS theme, see theme folder for available options |
 | about.md | About section on the home page |
 | motd.md | Site message under the title |
 | title.md | Site title |
+
+By editing these meta files you are able to change site title, its CSS (theme), write full 'about' section, motd (text under the title) or even edit list of buttons visible under the list of articles.
+Please note `title.md`, `motd.md` and `theme.md` should not contain actual Markdown but just plain text.
 
 ---
 
