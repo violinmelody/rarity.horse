@@ -31,6 +31,8 @@ Served via GitHub Pages.
 - Beautiful yet extremely fast (pure HTML + CSS)
 - Different themes
 
+# <p align="center">![Preview](.github/preview_themes.png)</p>
+
 ---
 
 ## Repository Model
