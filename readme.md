@@ -4,19 +4,21 @@
 [![Pages](https://img.shields.io/github/deployments/violinmelody/rarity.horse/github-pages?label=pages&logo=github)](https://rarity.horse/)
 
 <p align="center">
-A handcrafted, static, Markdown-driven website generation engine inspired by  
+A handcrafted, static, markdown-driven blog website engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
+
+Create your blog using favourite text editor directly from your computer.
+
 See the live demo on https://rarity.horse/
 </p>
 
 # <p align="center">![Preview](.github/preview.png)</p>
 
-No JavaScript.  
-No trackers.  
-No runtime dependencies.
-
-Built automatically with GitHub Actions.  
-Served via GitHub Pages.
+- No JavaScript
+- No trackers
+- No runtime dependencies
+- Built automatically with GitHub Actions
+- Can be served via GitHub Pages
 
 ---
 
