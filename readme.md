@@ -6,9 +6,11 @@
 <p align="center">
 A handcrafted, static, markdown-driven blog website engine inspired by  
 90s personal pages, demoscene aesthetics and Rarity's elegance.
-
-Create your blog using favourite text editor directly from your computer.
-
+</p>
+<p align="center">
+Create your blog in seconds using favourite text editor directly from your computer.
+</p>
+<p align="center">
 See the live demo on https://rarity.horse/
 </p>
 
