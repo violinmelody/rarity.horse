@@ -26,15 +26,14 @@ See the live demo on https://rarity.horse/
 
 ## Features
 
-- Markdown articles stored in a **separate repository**
+- Markdown articles that can be also stored in a **separate repository**
 - Automatic article dates (from file modification time)
 - Folder-based categories
 - Per-article image folders
 - ASCII tree index
-- Folder & file icons
 - Automatic dark/light mode
 - Beautiful yet extremely fast (pure HTML + CSS)
-- Different themes
+- Support for custom themes
 
 # <p align="center">![Preview](.github/preview_themes.png)</p>
 
