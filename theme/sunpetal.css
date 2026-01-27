@@ -36,7 +36,7 @@
     --muted: #b6aa7a;
     --code-bg: #19160e;
 
-    --shadow-md: 0 24px 60px rgba(0,0,0,0.5);
+    --shadow-md: 0 24px 60px rgba(0,0,0,0.55);
   }
 }
 
@@ -47,38 +47,79 @@
 body {
   margin: 0;
   padding: 2rem;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.35),
-      rgba(255,255,255,0) 40%
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,0,0,0.015),
-      rgba(0,0,0,0.015) 1px,
-      transparent 1px,
-      transparent 6px
-    ),
-    var(--bg);
   color: var(--text);
   font-family: ui-serif, Georgia, "Times New Roman", serif;
   line-height: 1.7;
+
+  background:
+    /* ultra-fine fiber noise */
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,0,0,0.02),
+      rgba(0,0,0,0.02) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    /* irregular weave offset */
+    linear-gradient(
+      92deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0) 40%,
+      rgba(0,0,0,0.04) 65%,
+      rgba(255,255,255,0.03)
+    ),
+    /* silk sheen */
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.35),
+      rgba(255,255,255,0) 55%
+    ),
+    var(--bg);
 }
 
 .container {
   max-width: 900px;
   margin: auto;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(255,255,255,0.65),
-      rgba(255,255,255,0)
-    ),
-    var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+
+  background:
+    /* tighter weave on panels */
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.035),
+      rgba(255,255,255,0.035) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.03),
+      rgba(0,0,0,0.03) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    /* directional silk highlight */
+    linear-gradient(
+      155deg,
+      rgba(255,255,255,0.55),
+      rgba(255,255,255,0) 48%
+    ),
+    /* depth shadow */
+    linear-gradient(
+      340deg,
+      rgba(0,0,0,0.08),
+      rgba(0,0,0,0) 60%
+    ),
+    var(--panel);
 }
 
 /* ---------- HEADER ---------- */
@@ -99,8 +140,8 @@ header h1 {
   0%, 100% { text-shadow: none; }
   50% {
     text-shadow:
-      0 0 18px var(--accent-soft),
-      0 0 32px var(--accent-glow);
+      0 0 20px var(--accent-soft),
+      0 0 36px var(--accent-glow);
   }
 }
 
@@ -123,11 +164,14 @@ article,
 .about {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
+
   background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.35),
-      rgba(255,255,255,0)
+    repeating-linear-gradient(
+      92deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.03) 1px,
+      transparent 1px,
+      transparent 6px
     );
 }
 
@@ -152,13 +196,16 @@ article,
   margin: 1.4rem 0;
   padding: 0.9rem 1.2rem;
   border-left: 4px solid var(--accent);
-  background:
-    linear-gradient(
-      120deg,
-      var(--accent-soft),
-      transparent 70%
-    );
   border-radius: var(--radius-sm);
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--accent-soft),
+      var(--accent-soft) 2px,
+      transparent 2px,
+      transparent 7px
+    );
 }
 
 .markdown code {
@@ -237,26 +284,10 @@ a:hover::after {
   to { background-position: 200% 0; }
 }
 
-.tree-file a {
-  z-index: 1;
-}
-
 .tree-date {
   color: var(--muted);
   font-size: 0.75rem;
   margin-left: 0.4rem;
-}
-
-.tree img {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
-  margin-right: 4px;
-  content: var(--icon-file);
-}
-
-.tree-folder img {
-  content: var(--icon-folder);
 }
 
 /* ---------- BUTTONS ---------- */
@@ -277,19 +308,6 @@ a:hover::after {
 
 .buttons a:hover img {
   transform: translateY(-4px);
-}
-
-/* ---------- META ---------- */
-
-.date {
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-bottom: 1rem;
-}
-
-.back {
-  margin-top: 2.6rem;
-  font-size: 0.9rem;
 }
 
 /* ---------- FOOTER ---------- */
