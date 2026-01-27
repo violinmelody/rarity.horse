@@ -5,21 +5,21 @@
   --border: rgba(214, 150, 88, 0.35);
 
   /* silk pink + saffron gold */
-  --accent: #d86b9c;          /* rose silk */
-  --accent-warm: #f0a23b;     /* golden saffron */
-  --accent-soft: rgba(216, 107, 156, 0.14);
-  --accent-glow: rgba(240, 162, 59, 0.55);
+  --accent: #b84f82;
+  --accent-warm: #c9821f;
+  --accent-soft: rgba(184, 79, 130, 0.12);
+  --accent-glow: rgba(201, 130, 31, 0.45);
 
-  --text: #3b1f2b;
-  --muted: #8c5a6b;
-  --code-bg: #f7efe8;
+  --text: #2b1820;
+  --muted: #6f4655;
+  --code-bg: #efe4da;
 
   --radius: 16px;
   --radius-sm: 9px;
 
   --shadow-md:
-    0 20px 50px rgba(120, 60, 20, 0.18),
-    inset 0 0 0 1px rgba(255,255,255,0.35);
+    0 18px 40px rgba(120, 60, 20, 0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.45);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fast: 0.18s;
@@ -45,20 +45,20 @@
   :root {
     --bg: #1b1216;
     --panel: #24181e;
-    --border: rgba(240, 162, 59, 0.25);
+    --border: rgba(246, 177, 75, 0.25);
 
-    --accent: #f09bc0;
-    --accent-warm: #f6b14b;
-    --accent-soft: rgba(240, 155, 192, 0.16);
-    --accent-glow: rgba(246, 177, 75, 0.6);
+    --accent: #e38ab3;
+    --accent-warm: #e3a23a;
+    --accent-soft: rgba(227, 138, 179, 0.14);
+    --accent-glow: rgba(227, 162, 58, 0.5);
 
-    --text: #f6e9ef;
-    --muted: #caa6b5;
-    --code-bg: #2a1c22;
+    --text: #f2e6ec;
+    --muted: #b998a6;
+    --code-bg: #2f2127;
 
     --shadow-md:
-      0 28px 70px rgba(0,0,0,0.55),
-      inset 0 0 0 1px rgba(255,255,255,0.06);
+      0 24px 60px rgba(0,0,0,0.6),
+      inset 0 0 0 1px rgba(255,255,255,0.08);
   }
 }
 
@@ -72,32 +72,13 @@ body {
   color: var(--text);
   font-family: ui-serif, Georgia, "Times New Roman", serif;
   line-height: 1.75;
-
-  background:
-    radial-gradient(
-      1200px 600px at top left,
-      rgba(240,162,59,0.18),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 500px at bottom right,
-      rgba(216,107,156,0.22),
-      transparent 55%
-    ),
-    var(--silk-noise),
-    linear-gradient(180deg, #fff3ea, var(--bg));
+  background: var(--bg);
 }
 
 .container {
   max-width: 900px;
   margin: auto;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,0.9),
-      rgba(255,255,255,0.82)
-    ),
-    var(--silk-noise);
+  background: var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -108,13 +89,7 @@ body {
 header {
   text-align: center;
   padding: 2.8rem 1.6rem 2.2rem;
-  background:
-    linear-gradient(
-      110deg,
-      rgba(240,162,59,0.25),
-      rgba(216,107,156,0.25)
-    ),
-    var(--silk-noise);
+  background: var(--panel);
 }
 
 header h1 {
@@ -132,9 +107,9 @@ header h1 {
   }
   50% {
     text-shadow:
-      0 0 18px var(--accent-soft),
-      0 0 32px var(--accent-glow);
-    filter: brightness(1.08);
+      0 0 14px var(--accent-soft),
+      0 0 22px var(--accent-glow);
+    filter: brightness(1.05);
   }
 }
 
@@ -157,12 +132,7 @@ article,
 .about {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(240,162,59,0.06),
-      rgba(216,107,156,0.04)
-    );
+  background: var(--panel);
 }
 
 /* ---------- MARKDOWN ---------- */
@@ -186,13 +156,7 @@ article,
   margin: 1.6rem 0;
   padding: 1rem 1.3rem;
   border-left: 4px solid var(--accent-warm);
-  background:
-    linear-gradient(
-      90deg,
-      var(--accent-soft),
-      transparent 70%
-    ),
-    var(--silk-noise);
+  background: var(--panel);
   border-radius: var(--radius-sm);
 }
 
@@ -225,16 +189,11 @@ a::after {
   bottom: -3px;
   width: 100%;
   height: 2px;
-  background:
-    linear-gradient(
-      90deg,
-      var(--accent),
-      var(--accent-warm)
-    );
+  background: var(--accent-warm);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--med) var(--ease);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 a:hover::after {
@@ -263,20 +222,7 @@ a:hover::after {
 }
 
 .tree-file:hover {
-  background:
-    linear-gradient(
-      120deg,
-      rgba(240,162,59,0.25),
-      rgba(216,107,156,0.18),
-      transparent 70%
-    ),
-    var(--silk-noise);
-  animation: silk-shimmer var(--slow) linear infinite;
-}
-
-@keyframes silk-shimmer {
-  from { background-position: -200% 0; }
-  to { background-position: 200% 0; }
+  background: var(--accent-soft);
 }
 
 .tree-date {
@@ -339,12 +285,7 @@ footer {
   font-size: 0.8rem;
   color: var(--muted);
   border-top: 1px solid var(--border);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(216,107,156,0.08),
-      transparent
-    );
+  background: var(--panel);
 }
 
 /* ---------- MOBILE ---------- */
