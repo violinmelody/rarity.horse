@@ -1,71 +1,59 @@
 :root {
-  /* --- SILK INSPIRED PALETTE --- */
-  --bg: #d2b894;
-  --panel: #e2c9a6;
-  --border: rgba(130, 85, 35, 0.45);
+  /* --- SILK BASE --- */
+  --bg: #d1b48a;          /* champagne silk */
+  --panel: #e3caa1;       /* woven ivory silk */
+  --border: rgba(120, 80, 35, 0.45);
 
-  /* silk pink + saffron gold */
-  --accent: #8b2d55;
-  --accent-warm: #9c6118;
-  --accent-soft: rgba(139, 45, 85, 0.38);
-  --accent-glow: rgba(156, 97, 24, 0.55);
+  --text: #1b0e12;
+  --muted: #4e3841;
 
-  --text: #1a0b10;
-  --muted: #4a343d;
-  --code-bg: #c9b091;
+  --accent: #8c2f58;      /* royal rose */
+  --accent-warm: #9a611a; /* saffron gold */
 
-  --radius: 16px;
-  --radius-sm: 9px;
+  --code-bg: #c7ae88;
 
-  --shadow-md:
-    0 22px 46px rgba(85, 45, 15, 0.4),
-    inset 0 0 0 1px rgba(255,255,255,0.45);
+  --radius: 14px;
+  --radius-sm: 8px;
 
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --fast: 0.18s;
-  --med: 0.45s;
-  --slow: 3.2s;
+  --shadow:
+    0 18px 40px rgba(80, 45, 15, 0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.35);
 
-  /* ICONS */
-  --icon-file: url("/theme/icons/file_gem.png");
-  --icon-folder: url("/theme/icons/folder.png");
-
-  /* Thai silk warp + weft */
-  --silk-noise:
+  /* silk weave */
+  --silk:
     repeating-linear-gradient(
       90deg,
-      rgba(255,255,255,0.45) 0px,
-      rgba(255,255,255,0.45) 1px,
-      rgba(0,0,0,0.35) 2px,
-      rgba(0,0,0,0.35) 3px
+      rgba(255,255,255,0.35) 0px,
+      rgba(255,255,255,0.35) 1px,
+      rgba(0,0,0,0.25) 2px,
+      rgba(0,0,0,0.25) 3px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(255,255,255,0.25) 0px,
-      rgba(255,255,255,0.25) 2px,
-      rgba(0,0,0,0.28) 4px,
-      rgba(0,0,0,0.28) 6px
+      rgba(255,255,255,0.18) 0px,
+      rgba(255,255,255,0.18) 2px,
+      rgba(0,0,0,0.22) 4px,
+      rgba(0,0,0,0.22) 6px
     );
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #070405;
-    --panel: #141013;
-    --border: rgba(156, 97, 24, 0.4);
+    --bg: #0a0607;
+    --panel: #151013;
+    --border: rgba(154, 97, 26, 0.35);
 
-    --accent: #c8618e;
-    --accent-warm: #c28a32;
-    --accent-soft: rgba(200, 97, 142, 0.4);
-    --accent-glow: rgba(194, 138, 50, 0.5);
+    --text: #f5eef1;
+    --muted: #b69ba6;
 
-    --text: #f8f0f3;
-    --muted: #b79ca7;
+    --accent: #c96490;
+    --accent-warm: #c08a32;
+
     --code-bg: #22181c;
 
-    --shadow-md:
-      0 34px 90px rgba(0,0,0,0.95),
-      inset 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow:
+      0 28px 90px rgba(0,0,0,0.9),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
   }
 }
 
@@ -75,13 +63,13 @@
 
 body {
   margin: 0;
-  padding: 2rem;
+  padding: 1.8rem;
+  font-family: ui-serif, Georgia, serif;
+  line-height: 1.7;
   color: var(--text);
-  font-family: ui-serif, Georgia, "Times New Roman", serif;
-  line-height: 1.75;
   background:
     var(--bg),
-    var(--silk-noise);
+    var(--silk);
   background-blend-mode: overlay;
 }
 
@@ -90,99 +78,107 @@ body {
   margin: auto;
   background:
     var(--panel),
-    var(--silk-noise);
+    var(--silk);
   background-blend-mode: overlay;
   border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
 /* ---------- HEADER ---------- */
 
 header {
+  padding: 2.2rem 1.4rem;
   text-align: center;
-  padding: 2.8rem 1.6rem 2.2rem;
   background:
     var(--panel),
-    var(--silk-noise);
+    var(--silk);
   background-blend-mode: overlay;
 }
 
 header h1 {
   margin: 0;
-  font-size: 2.15rem;
-  letter-spacing: 0.28em;
+  font-size: 2rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
 .tagline {
-  color: var(--muted);
+  margin-top: 0.6rem;
   font-style: italic;
-  margin-top: 0.5rem;
+  color: var(--muted);
 }
 
-/* ---------- SECTIONS ---------- */
+/* ---------- CONTENT ---------- */
 
 main,
-.about,
-.buttons,
 article,
+.about,
 .category {
-  padding: 2.5rem;
+  padding: 2rem;
 }
 
 .about {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  background:
-    var(--panel),
-    var(--silk-noise);
-  background-blend-mode: overlay;
 }
 
-/* ---------- MARKDOWN ---------- */
+/* ---------- TEXT ---------- */
 
-.markdown h1 { font-size: 2rem; }
-.markdown h2 { font-size: 1.55rem; }
-.markdown h3 { font-size: 1.25rem; }
+p { margin: 0.8rem 0; }
 
-.markdown p { margin: 0.85rem 0; }
-
-.markdown blockquote {
-  margin: 1.6rem 0;
-  padding: 1rem 1.3rem;
-  border-left: 4px solid var(--accent-warm);
-  background:
-    rgba(0,0,0,0.12),
-    var(--panel),
-    var(--silk-noise);
-  background-blend-mode: overlay;
-  border-radius: var(--radius-sm);
-}
-
-.markdown code,
-.markdown pre {
-  background: var(--code-bg);
-  border-radius: var(--radius-sm);
+h1, h2, h3 {
+  margin-top: 1.6rem;
 }
 
 /* ---------- LINKS ---------- */
 
 a {
   color: var(--accent);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-warm);
+  text-underline-offset: 3px;
+}
+
+/* ---------- CODE ---------- */
+
+code, pre {
+  background: var(--code-bg);
+  padding: 0.25rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-family: ui-monospace, monospace;
 }
 
 /* ---------- FOOTER ---------- */
 
 footer {
+  padding: 1rem;
   text-align: center;
-  padding: 1.2rem;
   font-size: 0.8rem;
   color: var(--muted);
   border-top: 1px solid var(--border);
   background:
     var(--panel),
-    var(--silk-noise);
+    var(--silk);
   background-blend-mode: overlay;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.4rem;
+    letter-spacing: 0.16em;
+  }
+
+  main,
+  article,
+  .about,
+  .category {
+    padding: 1.3rem;
+  }
 }
