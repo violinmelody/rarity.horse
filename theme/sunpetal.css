@@ -1,13 +1,13 @@
 :root {
-  --bg: #fbf4f1;
-  --panel: #fff9f6;
-  --border: #ecd2c6;
-  --accent: #c56a3a;
-  --accent-soft: rgba(197, 106, 58, 0.14);
-  --accent-glow: rgba(197, 106, 58, 0.45);
-  --text: #3a1f16;
-  --muted: #8a5a46;
-  --code-bg: #f4ebe6;
+  --bg: #fdf1ee;
+  --panel: #fff7f4;
+  --border: #efcfc6;
+  --accent: #d16b5a;
+  --accent-soft: rgba(209, 107, 90, 0.14);
+  --accent-glow: rgba(209, 107, 90, 0.45);
+  --text: #3b1e1a;
+  --muted: #94635a;
+  --code-bg: #f6e8e4;
 
   --radius: 14px;
   --radius-sm: 8px;
@@ -23,38 +23,36 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder_purple.png");
 
-  /* MICRO FIBER NOISE (LIGHT) */
+  /* ORGANIC FIBER NOISE */
   --noise: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
 <filter id='n'>\
-<feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/>\
+<feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/>\
 </filter>\
-<rect width='120' height='120' filter='url(%23n)' opacity='0.035'/>\
+<rect width='140' height='140' filter='url(%23n)' opacity='0.03'/>\
 </svg>");
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1a0f0c;
-    --panel: #221310;
-    --border: #4a2a1f;
-    --accent: #e09b63;
-    --accent-soft: rgba(224, 155, 99, 0.16);
-    --accent-glow: rgba(224, 155, 99, 0.55);
-    --text: #f4e7dd;
-    --muted: #c19a82;
-    --code-bg: #1f120f;
+    --bg: #1e0f10;
+    --panel: #261314;
+    --border: #4f2a26;
+    --accent: #e28a78;
+    --accent-soft: rgba(226, 138, 120, 0.16);
+    --accent-glow: rgba(226, 138, 120, 0.55);
+    --text: #f6e5e1;
+    --muted: #c89a90;
+    --code-bg: #221213;
 
     --shadow-md: 0 26px 70px rgba(0,0,0,0.65);
 
-    /* MICRO FIBER NOISE (DARK – DUAL POLARITY) */
     --noise: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
 <filter id='n'>\
-<feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/>\
+<feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/>\
 </filter>\
-<rect width='120' height='120' filter='url(%23n)' opacity='0.06'/>\
-<rect width='120' height='120' filter='url(%23n)' opacity='0.045' fill='black'/>\
+<rect width='140' height='140' filter='url(%23n)' opacity='0.06'/>\
 </svg>");
   }
 }
@@ -70,16 +68,7 @@ body {
   color: var(--text);
   font-family: ui-serif, Georgia, "Times New Roman", serif;
   line-height: 1.7;
-
-  background-image:
-    var(--noise),
-    repeating-linear-gradient(
-      90deg,
-      rgba(0,0,0,0.015),
-      rgba(0,0,0,0.015) 1px,
-      transparent 1px,
-      transparent 6px
-    );
+  background-image: var(--noise);
 }
 
 .container {
@@ -89,16 +78,7 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-
-  background-image:
-    var(--noise),
-    repeating-linear-gradient(
-      0deg,
-      rgba(0,0,0,0.02),
-      rgba(0,0,0,0.02) 1px,
-      transparent 1px,
-      transparent 7px
-    );
+  background-image: var(--noise);
 }
 
 /* ---------- HEADER ---------- */
@@ -236,11 +216,7 @@ a:hover::after {
 .tree-file:hover {
   background:
     var(--noise),
-    linear-gradient(
-      110deg,
-      var(--accent-soft),
-      transparent 65%
-    );
+    var(--accent-soft);
 }
 
 .tree-file a { z-index: 1; }
