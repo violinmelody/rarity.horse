@@ -23,11 +23,11 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder_purple.png");
 
-  /* CROISSANT PATTERN — HIGH VISIBILITY */
+  /* CROISSANT OUTLINE PATTERN (LIGHT) */
   --pattern: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'>\
-<path d='M40 80 C65 45, 95 45, 120 80 C95 65, 65 65, 40 80 Z'\
-fill='rgba(47,79,168,0.22)'/>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<path d='M30 75 C55 40, 85 40, 110 75 C85 60, 55 60, 30 75 Z'\
+fill='none' stroke='rgba(47,79,168,0.35)' stroke-width='2'/>\
 </svg>");
 }
 
@@ -45,11 +45,11 @@ fill='rgba(47,79,168,0.22)'/>\
 
     --shadow-md: 0 26px 70px rgba(0,0,0,0.65);
 
-    /* CROISSANT PATTERN — DARK MODE */
+    /* CROISSANT OUTLINE PATTERN (DARK) */
     --pattern: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'>\
-<path d='M40 80 C65 45, 95 45, 120 80 C95 65, 65 65, 40 80 Z'\
-fill='rgba(226,75,75,0.26)'/>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<path d='M30 75 C55 40, 85 40, 110 75 C85 60, 55 60, 30 75 Z'\
+fill='none' stroke='rgba(255,255,255,0.38)' stroke-width='2'/>\
 </svg>");
   }
 }
