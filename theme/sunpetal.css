@@ -23,7 +23,7 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder_purple.png");
 
-  /* MICRO FIBER NOISE */
+  /* MICRO FIBER NOISE (LIGHT) */
   --noise: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
 <filter id='n'>\
@@ -46,6 +46,16 @@
     --code-bg: #1f120f;
 
     --shadow-md: 0 26px 70px rgba(0,0,0,0.65);
+
+    /* MICRO FIBER NOISE (DARK – DUAL POLARITY) */
+    --noise: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
+<filter id='n'>\
+<feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/>\
+</filter>\
+<rect width='120' height='120' filter='url(%23n)' opacity='0.06'/>\
+<rect width='120' height='120' filter='url(%23n)' opacity='0.045' fill='black'/>\
+</svg>");
   }
 }
 
