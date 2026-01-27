@@ -21,14 +21,18 @@
 
   /* ICONS */
   --icon-file: url("/theme/icons/file_gem.png");
-  --icon-folder: url("/theme/icons/folder.png");
+  --icon-folder: url("/theme/icons/folder_purple.png");
 
-  /* BAGUETTE PATTERN */
+  /* CROISSANT PATTERN (LIGHT) */
   --pattern: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
-<g fill='none' stroke='rgba(0,0,0,0.06)' stroke-width='1.6'>\
-<ellipse cx='30' cy='40' rx='16' ry='4' transform='rotate(-20 30 40)'/>\
-<ellipse cx='90' cy='80' rx='16' ry='4' transform='rotate(-20 90 80)'/>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<g transform='rotate(-20 70 70) translate(20 50)'>\
+<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
+fill='rgba(0,0,0,0.04)' stroke='rgba(255,255,255,0.85)' stroke-width='2'/>\
+</g>\
+<g transform='rotate(-20 70 70) translate(70 90)'>\
+<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
+fill='rgba(0,0,0,0.04)' stroke='rgba(255,255,255,0.85)' stroke-width='2'/>\
 </g>\
 </svg>");
 }
@@ -47,11 +51,16 @@
 
     --shadow-md: 0 26px 70px rgba(0,0,0,0.65);
 
+    /* CROISSANT PATTERN (DARK) */
     --pattern: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>\
-<g fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1.6'>\
-<ellipse cx='30' cy='40' rx='16' ry='4' transform='rotate(-20 30 40)'/>\
-<ellipse cx='90' cy='80' rx='16' ry='4' transform='rotate(-20 90 80)'/>\
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
+<g transform='rotate(-20 70 70) translate(20 50)'>\
+<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
+fill='rgba(255,255,255,0.06)' stroke='rgba(20,24,38,0.9)' stroke-width='2'/>\
+</g>\
+<g transform='rotate(-20 70 70) translate(70 90)'>\
+<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
+fill='rgba(255,255,255,0.06)' stroke='rgba(20,24,38,0.9)' stroke-width='2'/>\
 </g>\
 </svg>");
   }
