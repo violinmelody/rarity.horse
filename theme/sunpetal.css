@@ -1,25 +1,25 @@
 :root {
   /* --- SILK INSPIRED PALETTE --- */
-  --bg: #f6ede4;
-  --panel: #fbf4ee;
-  --border: rgba(170, 110, 60, 0.32);
+  --bg: #e9d6bf;
+  --panel: #f2e4d3;
+  --border: rgba(150, 105, 55, 0.4);
 
   /* silk pink + saffron gold */
-  --accent: #9f3f6c;
-  --accent-warm: #b06f1c;
-  --accent-soft: rgba(159, 63, 108, 0.18);
-  --accent-glow: rgba(176, 111, 28, 0.35);
+  --accent: #8f2f5a;
+  --accent-warm: #a86618;
+  --accent-soft: rgba(143, 47, 90, 0.25);
+  --accent-glow: rgba(168, 102, 24, 0.45);
 
-  --text: #1f0f14;
-  --muted: #5f414c;
-  --code-bg: #eaded3;
+  --text: #1e0e13;
+  --muted: #5a3f4a;
+  --code-bg: #dccbb8;
 
   --radius: 16px;
   --radius-sm: 9px;
 
   --shadow-md:
-    0 14px 32px rgba(120, 60, 20, 0.18),
-    inset 0 0 0 1px rgba(255,255,255,0.6);
+    0 18px 38px rgba(90, 45, 15, 0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.55);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fast: 0.18s;
@@ -30,42 +30,42 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder.png");
 
-  /* silk warp + weft */
+  /* Thai silk warp + weft texture */
   --silk-noise:
     repeating-linear-gradient(
       90deg,
-      rgba(255,255,255,0.12) 0px,
-      rgba(255,255,255,0.12) 1px,
-      rgba(0,0,0,0.06) 2px,
-      rgba(0,0,0,0.06) 3px
+      rgba(255,255,255,0.35) 0px,
+      rgba(255,255,255,0.35) 1px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 3px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(255,255,255,0.05) 0px,
-      rgba(255,255,255,0.05) 2px,
-      rgba(0,0,0,0.04) 4px,
-      rgba(0,0,0,0.04) 6px
+      rgba(255,255,255,0.18) 0px,
+      rgba(255,255,255,0.18) 2px,
+      rgba(0,0,0,0.14) 4px,
+      rgba(0,0,0,0.14) 6px
     );
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0b0709;
-    --panel: #171014;
-    --border: rgba(176, 111, 28, 0.26);
+    --bg: #090608;
+    --panel: #151014;
+    --border: rgba(168, 102, 24, 0.35);
 
-    --accent: #c96a94;
-    --accent-warm: #c1882f;
-    --accent-soft: rgba(201, 106, 148, 0.22);
-    --accent-glow: rgba(193, 136, 47, 0.3);
+    --accent: #c8618e;
+    --accent-warm: #c28a32;
+    --accent-soft: rgba(200, 97, 142, 0.35);
+    --accent-glow: rgba(194, 138, 50, 0.4);
 
-    --text: #f5ecef;
-    --muted: #b596a2;
-    --code-bg: #24181d;
+    --text: #f7eff2;
+    --muted: #b59aa6;
+    --code-bg: #22181c;
 
     --shadow-md:
-      0 26px 72px rgba(0,0,0,0.85),
-      inset 0 0 0 1px rgba(255,255,255,0.07);
+      0 30px 80px rgba(0,0,0,0.9),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
   }
 }
 
@@ -82,7 +82,7 @@ body {
   background:
     var(--bg),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
 }
 
 .container {
@@ -91,7 +91,7 @@ body {
   background:
     var(--panel),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -105,7 +105,7 @@ header {
   background:
     var(--panel),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
 }
 
 header h1 {
@@ -113,7 +113,7 @@ header h1 {
   font-size: 2.15rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  animation: silk-sheen 8s ease-in-out infinite;
+  animation: silk-sheen 9s ease-in-out infinite;
 }
 
 @keyframes silk-sheen {
@@ -123,9 +123,9 @@ header h1 {
   }
   50% {
     text-shadow:
-      0 0 8px var(--accent-soft),
-      0 0 16px var(--accent-glow);
-    filter: brightness(1.03);
+      0 0 12px var(--accent-soft),
+      0 0 22px var(--accent-glow);
+    filter: brightness(1.06);
   }
 }
 
@@ -151,7 +151,7 @@ article,
   background:
     var(--panel),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
 }
 
 /* ---------- MARKDOWN ---------- */
@@ -176,10 +176,10 @@ article,
   padding: 1rem 1.3rem;
   border-left: 4px solid var(--accent-warm);
   background:
-    rgba(0,0,0,0.03),
+    rgba(0,0,0,0.05),
     var(--panel),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
   border-radius: var(--radius-sm);
 }
 
@@ -216,7 +216,7 @@ a::after {
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--med) var(--ease);
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 a:hover::after {
@@ -248,7 +248,7 @@ a:hover::after {
   background:
     var(--accent-soft),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
 }
 
 .tree-date {
@@ -281,7 +281,7 @@ a:hover::after {
   margin: 6px;
   border-radius: 6px;
   box-shadow:
-    0 3px 10px rgba(0,0,0,0.55),
+    0 3px 12px rgba(0,0,0,0.6),
     inset 0 0 0 1px rgba(255,255,255,0.12);
   transition: transform var(--fast) var(--ease);
 }
@@ -314,7 +314,7 @@ footer {
   background:
     var(--panel),
     var(--silk-noise);
-  background-blend-mode: multiply;
+  background-blend-mode: overlay;
 }
 
 /* ---------- MOBILE ---------- */
