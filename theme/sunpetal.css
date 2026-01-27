@@ -1,25 +1,25 @@
 :root {
   /* --- SILK INSPIRED PALETTE --- */
-  --bg: #fbf2ea;
-  --panel: #fff9f3;
-  --border: rgba(180, 120, 70, 0.28);
+  --bg: #f6ede4;
+  --panel: #fbf4ee;
+  --border: rgba(170, 110, 60, 0.32);
 
   /* silk pink + saffron gold */
-  --accent: #a94473;
-  --accent-warm: #b8741e;
-  --accent-soft: rgba(169, 68, 115, 0.14);
-  --accent-glow: rgba(184, 116, 30, 0.38);
+  --accent: #9f3f6c;
+  --accent-warm: #b06f1c;
+  --accent-soft: rgba(159, 63, 108, 0.18);
+  --accent-glow: rgba(176, 111, 28, 0.35);
 
-  --text: #241217;
-  --muted: #6a4653;
-  --code-bg: #efe2d6;
+  --text: #1f0f14;
+  --muted: #5f414c;
+  --code-bg: #eaded3;
 
   --radius: 16px;
   --radius-sm: 9px;
 
   --shadow-md:
-    0 16px 36px rgba(120, 60, 20, 0.16),
-    inset 0 0 0 1px rgba(255,255,255,0.55);
+    0 14px 32px rgba(120, 60, 20, 0.18),
+    inset 0 0 0 1px rgba(255,255,255,0.6);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --fast: 0.18s;
@@ -30,35 +30,42 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder.png");
 
-  /* subtle silk grain */
+  /* silk warp + weft */
   --silk-noise:
     repeating-linear-gradient(
       90deg,
-      rgba(255,255,255,0.08) 0px,
-      rgba(255,255,255,0.08) 1px,
-      rgba(0,0,0,0.045) 2px,
-      rgba(0,0,0,0.045) 3px
+      rgba(255,255,255,0.12) 0px,
+      rgba(255,255,255,0.12) 1px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 2px,
+      rgba(0,0,0,0.04) 4px,
+      rgba(0,0,0,0.04) 6px
     );
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0c080a;
+    --bg: #0b0709;
     --panel: #171014;
-    --border: rgba(184, 116, 30, 0.25);
+    --border: rgba(176, 111, 28, 0.26);
 
-    --accent: #cf739c;
-    --accent-warm: #c88b34;
-    --accent-soft: rgba(207, 115, 156, 0.18);
-    --accent-glow: rgba(200, 139, 52, 0.35);
+    --accent: #c96a94;
+    --accent-warm: #c1882f;
+    --accent-soft: rgba(201, 106, 148, 0.22);
+    --accent-glow: rgba(193, 136, 47, 0.3);
 
-    --text: #f4eaee;
-    --muted: #b1909e;
-    --code-bg: #23171c;
+    --text: #f5ecef;
+    --muted: #b596a2;
+    --code-bg: #24181d;
 
     --shadow-md:
-      0 28px 72px rgba(0,0,0,0.85),
-      inset 0 0 0 1px rgba(255,255,255,0.06);
+      0 26px 72px rgba(0,0,0,0.85),
+      inset 0 0 0 1px rgba(255,255,255,0.07);
   }
 }
 
@@ -75,6 +82,7 @@ body {
   background:
     var(--bg),
     var(--silk-noise);
+  background-blend-mode: multiply;
 }
 
 .container {
@@ -83,6 +91,7 @@ body {
   background:
     var(--panel),
     var(--silk-noise);
+  background-blend-mode: multiply;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -96,6 +105,7 @@ header {
   background:
     var(--panel),
     var(--silk-noise);
+  background-blend-mode: multiply;
 }
 
 header h1 {
@@ -113,9 +123,9 @@ header h1 {
   }
   50% {
     text-shadow:
-      0 0 10px var(--accent-soft),
-      0 0 18px var(--accent-glow);
-    filter: brightness(1.04);
+      0 0 8px var(--accent-soft),
+      0 0 16px var(--accent-glow);
+    filter: brightness(1.03);
   }
 }
 
@@ -141,6 +151,7 @@ article,
   background:
     var(--panel),
     var(--silk-noise);
+  background-blend-mode: multiply;
 }
 
 /* ---------- MARKDOWN ---------- */
@@ -165,9 +176,10 @@ article,
   padding: 1rem 1.3rem;
   border-left: 4px solid var(--accent-warm);
   background:
-    rgba(0,0,0,0.02),
+    rgba(0,0,0,0.03),
     var(--panel),
     var(--silk-noise);
+  background-blend-mode: multiply;
   border-radius: var(--radius-sm);
 }
 
@@ -236,6 +248,7 @@ a:hover::after {
   background:
     var(--accent-soft),
     var(--silk-noise);
+  background-blend-mode: multiply;
 }
 
 .tree-date {
@@ -269,7 +282,7 @@ a:hover::after {
   border-radius: 6px;
   box-shadow:
     0 3px 10px rgba(0,0,0,0.55),
-    inset 0 0 0 1px rgba(255,255,255,0.1);
+    inset 0 0 0 1px rgba(255,255,255,0.12);
   transition: transform var(--fast) var(--ease);
 }
 
@@ -301,6 +314,7 @@ footer {
   background:
     var(--panel),
     var(--silk-noise);
+  background-blend-mode: multiply;
 }
 
 /* ---------- MOBILE ---------- */
