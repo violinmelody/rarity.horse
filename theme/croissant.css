@@ -23,16 +23,16 @@
   --icon-file: url("/theme/icons/file_gem.png");
   --icon-folder: url("/theme/icons/folder_purple.png");
 
-  /* CROISSANT PATTERN (LIGHT) */
+  /* CROISSANT PATTERN (LIGHT — VISIBLE) */
   --pattern: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
 <g transform='rotate(-20 70 70) translate(20 50)'>\
-<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
-fill='rgba(0,0,0,0.04)' stroke='rgba(255,255,255,0.85)' stroke-width='2'/>\
+<path d='M0 22 C22 -4, 58 -4, 80 22 C58 10, 22 10, 0 22 Z'\
+fill='rgba(47,79,168,0.10)' stroke='rgba(255,255,255,0.9)' stroke-width='2.2'/>\
 </g>\
-<g transform='rotate(-20 70 70) translate(70 90)'>\
-<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
-fill='rgba(0,0,0,0.04)' stroke='rgba(255,255,255,0.85)' stroke-width='2'/>\
+<g transform='rotate(-20 70 70) translate(70 95)'>\
+<path d='M0 22 C22 -4, 58 -4, 80 22 C58 10, 22 10, 0 22 Z'\
+fill='rgba(47,79,168,0.10)' stroke='rgba(255,255,255,0.9)' stroke-width='2.2'/>\
 </g>\
 </svg>");
 }
@@ -51,16 +51,16 @@ fill='rgba(0,0,0,0.04)' stroke='rgba(255,255,255,0.85)' stroke-width='2'/>\
 
     --shadow-md: 0 26px 70px rgba(0,0,0,0.65);
 
-    /* CROISSANT PATTERN (DARK) */
+    /* CROISSANT PATTERN (DARK — VISIBLE) */
     --pattern: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'>\
 <g transform='rotate(-20 70 70) translate(20 50)'>\
-<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
-fill='rgba(255,255,255,0.06)' stroke='rgba(20,24,38,0.9)' stroke-width='2'/>\
+<path d='M0 22 C22 -4, 58 -4, 80 22 C58 10, 22 10, 0 22 Z'\
+fill='rgba(226,75,75,0.14)' stroke='rgba(20,24,38,0.85)' stroke-width='2.2'/>\
 </g>\
-<g transform='rotate(-20 70 70) translate(70 90)'>\
-<path d='M0 20 C20 -5, 60 -5, 80 20 C60 8, 20 8, 0 20 Z'\
-fill='rgba(255,255,255,0.06)' stroke='rgba(20,24,38,0.9)' stroke-width='2'/>\
+<g transform='rotate(-20 70 70) translate(70 95)'>\
+<path d='M0 22 C22 -4, 58 -4, 80 22 C58 10, 22 10, 0 22 Z'\
+fill='rgba(226,75,75,0.14)' stroke='rgba(20,24,38,0.85)' stroke-width='2.2'/>\
 </g>\
 </svg>");
   }
