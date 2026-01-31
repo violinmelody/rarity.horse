@@ -44,27 +44,27 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #07080c;
-    --panel: #0d1018;
+    --bg: #040508;
+    --panel: #0b0d14;
     --border: rgba(255, 255, 255, 0.06);
 
-    --text: #e9ecf2;
-    --muted: #8b91a3;
+    --text: #eef0f6;
+    --muted: #8c92a4;
 
-    --p1: #0f1322;
-    --p2: #0b1626;
-    --p3: #0e1a1e;
-    --p4: #141022;
+    --p1: #0a0c12;
+    --p2: #0b0f1a;
+    --p3: #090c14;
+    --p4: #0d1020;
 
-    --accent: #8aa2ff;
-    --accent-soft: rgba(138, 162, 255, 0.18);
-    --accent-glow: rgba(138, 162, 255, 0.45);
+    --accent: #8fa3ff;
+    --accent-soft: rgba(143, 163, 255, 0.18);
+    --accent-glow: rgba(143, 163, 255, 0.45);
 
-    --code-bg: #111522;
+    --code-bg: #0f1320;
 
     --shadow-lg:
-      0 50px 160px rgba(0, 0, 0, 0.9),
-      0 0 60px rgba(138, 162, 255, 0.12);
+      0 60px 200px rgba(0, 0, 0, 0.95),
+      0 0 80px rgba(143, 163, 255, 0.12);
   }
 }
 
@@ -78,8 +78,8 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(1200px 600px at 10% -10%, var(--p2), transparent 45%),
-    radial-gradient(900px 500px at 90% 10%, var(--p1), transparent 50%),
+    radial-gradient(1000px 600px at 15% -10%, var(--p2), transparent 60%),
+    radial-gradient(800px 500px at 85% 0%, var(--p4), transparent 65%),
     var(--bg);
 }
 
@@ -97,6 +97,16 @@ body {
   backdrop-filter: blur(18px);
 }
 
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: linear-gradient(
+      180deg,
+      rgba(18,20,30,0.85),
+      rgba(10,12,20,0.85)
+    );
+  }
+}
+
 header {
   text-align: center;
   padding: 3rem 2rem 2.2rem;
@@ -109,7 +119,7 @@ header h1 {
   background: linear-gradient(
     90deg,
     var(--accent),
-    #9fd1ff,
+    #9fc4ff,
     #a6ffe6,
     var(--accent)
   );
