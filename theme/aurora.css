@@ -37,7 +37,7 @@
 </svg>");
 
   --icon-folder: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239aa0ff'>\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237b7cff'>\
 <path d='M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z'/>\
 </svg>");
 }
@@ -161,6 +161,12 @@ article,
     );
 }
 
+.date {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
 .markdown {
   animation: fade-up var(--med) var(--ease-spring);
 }
@@ -246,6 +252,12 @@ a:hover::after {
 .tree-file:hover {
   transform: translateX(6px);
   background: var(--accent-soft);
+}
+
+.tree-date {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: 0.5rem;
 }
 
 .tree img {
