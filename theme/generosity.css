@@ -32,7 +32,7 @@
     0 8px 24px rgba(40, 20, 80, 0.08);
 
   --icon-file: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b5cf6'>\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a78bfa'>\
 <path d='M6 2h7l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z'/>\
 </svg>");
 
@@ -368,6 +368,15 @@ footer {
   body { padding: 1rem; }
   header h1 { font-size: 1.6rem; }
   main, .about, article, .category { padding: 1.4rem; }
+}
+
+@media (max-width: 768px) {
+  .markdown h1::before,
+  .markdown h2::before,
+  .markdown h3::before {
+    animation-duration: 8s;
+    transform: scale(0.85);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
