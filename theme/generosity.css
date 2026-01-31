@@ -374,6 +374,12 @@ footer {
   .markdown h1::before,
   .markdown h2::before,
   .markdown h3::before {
+    position: relative;
+    left: auto;
+    display: block;
+    margin: 0 auto 0.4rem;
+    text-align: center;
+    opacity: 0.45;
     animation-duration: 8s;
     transform: scale(0.85);
   }
