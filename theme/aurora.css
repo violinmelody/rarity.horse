@@ -44,22 +44,27 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #050507;
-    --panel: #0b0c10;
-    --border: rgba(255, 255, 255, 0.08);
+    --bg: #07080c;
+    --panel: #0d1018;
+    --border: rgba(255, 255, 255, 0.06);
 
-    --text: #f4f5fa;
-    --muted: #9da2b0;
+    --text: #e9ecf2;
+    --muted: #8b91a3;
 
-    --accent: #9ea2ff;
-    --accent-soft: rgba(158, 162, 255, 0.18);
-    --accent-glow: rgba(158, 162, 255, 0.55);
+    --p1: #0f1322;
+    --p2: #0b1626;
+    --p3: #0e1a1e;
+    --p4: #141022;
 
-    --code-bg: #11131a;
+    --accent: #8aa2ff;
+    --accent-soft: rgba(138, 162, 255, 0.18);
+    --accent-glow: rgba(138, 162, 255, 0.45);
+
+    --code-bg: #111522;
 
     --shadow-lg:
-      0 40px 140px rgba(0, 0, 0, 0.85),
-      0 0 80px rgba(158, 162, 255, 0.18);
+      0 50px 160px rgba(0, 0, 0, 0.9),
+      0 0 60px rgba(138, 162, 255, 0.12);
   }
 }
 
@@ -73,15 +78,9 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(1200px 600px at 10% -10%, var(--p2), transparent 40%),
-    radial-gradient(900px 500px at 90% 10%, var(--p1), transparent 45%),
+    radial-gradient(1200px 600px at 10% -10%, var(--p2), transparent 45%),
+    radial-gradient(900px 500px at 90% 10%, var(--p1), transparent 50%),
     var(--bg);
-  animation: bg-drift 22s linear infinite alternate;
-}
-
-@keyframes bg-drift {
-  from { background-position: 0% 0%, 100% 0%, 0 0; }
-  to   { background-position: 10% 10%, 90% 20%, 0 0; }
 }
 
 .container {
@@ -89,19 +88,13 @@ body {
   margin: auto;
   background: linear-gradient(
     180deg,
-    rgba(255,255,255,0.6),
-    rgba(255,255,255,0.2)
+    rgba(255,255,255,0.65),
+    rgba(255,255,255,0.25)
   );
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   backdrop-filter: blur(18px);
-  animation: panel-float var(--slow) var(--ease-smooth) infinite alternate;
-}
-
-@keyframes panel-float {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-6px); }
 }
 
 header {
@@ -116,8 +109,8 @@ header h1 {
   background: linear-gradient(
     90deg,
     var(--accent),
-    #ff9bd5,
-    #7bffda,
+    #9fd1ff,
+    #a6ffe6,
     var(--accent)
   );
   background-size: 300%;
@@ -183,12 +176,6 @@ article,
       var(--p4),
       var(--p2)
     );
-  animation: quote-shift 6s ease-in-out infinite alternate;
-}
-
-@keyframes quote-shift {
-  from { filter: hue-rotate(0deg); }
-  to   { filter: hue-rotate(20deg); }
 }
 
 .markdown code {
@@ -303,4 +290,3 @@ footer {
     transition: none !important;
   }
 }
-
