@@ -148,10 +148,12 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree helpers ----------------
 
-def build_tree(node, path="", base_link="articles/"):
+def build_tree(node, path="", depth=0, base_link="articles/"):
     html = ""
 
-    # folders first, ordered by newest descendant
+    folder_indent = depth * 1.6
+    file_indent = folder_indent + 1.8
+
     children = sorted(
         node["children"].items(),
         key=lambda item: newest_date(item[1]),
@@ -162,25 +164,21 @@ def build_tree(node, path="", base_link="articles/"):
         child_path = f"{path}/{name}" if path else name
 
         html += (
-            "<div class='tree-folder'>"
-            "<div class='tree-folder-label'>"
+            f"<div class='tree-folder' style='margin-left: {folder_indent}rem'>"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
             f"<a href='/articles/{child_path}/index.html'>{name}</a>"
             "</div>"
-            "<div class='tree-children'>"
         )
 
-        html += build_tree(child, child_path, base_link)
+        html += build_tree(child, child_path, depth + 1, base_link)
 
-        html += "</div></div>"
-
-    # then files, ordered by date
     files = sorted(node["files"], key=lambda x: x[1], reverse=True)
     for f, date in files:
         title = title_from_file(f)
         link = f"{base_link}{f.with_suffix('.html')}"
+
         html += (
-            "<div class='tree-file'>"
+            f"<div class='tree-file' style='margin-left: {file_indent}rem'>"
             "<img src='/theme/icons/file_gem.png' alt='[f]'> "
             f"<a href='/{link}'>{title}</a>"
             f"<span class='tree-date'> · {date}</span>"
