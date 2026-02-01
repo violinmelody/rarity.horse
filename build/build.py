@@ -151,8 +151,7 @@ for md_file in CONTENT.rglob("*.md"):
 def build_tree(node, path="", depth=0, base_link="articles/"):
     html = ""
 
-    folder_indent = depth * 1.6
-    file_indent = folder_indent + 1.8
+    indent = depth * 1.6
 
     children = sorted(
         node["children"].items(),
@@ -164,7 +163,7 @@ def build_tree(node, path="", depth=0, base_link="articles/"):
         child_path = f"{path}/{name}" if path else name
 
         html += (
-            f"<div class='tree-folder' style='margin-left: {folder_indent}rem'>"
+            f"<div class='tree-folder' style='padding-left: {indent}rem'>"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
             f"<a href='/articles/{child_path}/index.html'>{name}</a>"
             "</div>"
@@ -178,7 +177,7 @@ def build_tree(node, path="", depth=0, base_link="articles/"):
         link = f"{base_link}{f.with_suffix('.html')}"
 
         html += (
-            f"<div class='tree-file' style='margin-left: {file_indent}rem'>"
+            f"<div class='tree-file' style='padding-left: {indent}rem'>"
             "<img src='/theme/icons/file_gem.png' alt='[f]'> "
             f"<a href='/{link}'>{title}</a>"
             f"<span class='tree-date'> · {date}</span>"
