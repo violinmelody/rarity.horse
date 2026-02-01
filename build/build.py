@@ -63,7 +63,11 @@ THEME_CSS = load_theme_css()
 # ---------------- Output ----------------
 
 OUT.mkdir(exist_ok=True)
-tree = {}
+
+tree = {
+    "files": [],
+    "children": {},
+}
 
 # ---------------- Git commit dates ----------------
 
@@ -88,14 +92,32 @@ def git_commit_date(file_path: Path) -> str:
 
     return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
 
+# ---------------- Tree building ----------------
+
+def insert_into_tree(root, parts, entry):
+    if not parts:
+        root["files"].append(entry)
+        return
+    head, *tail = parts
+    root["children"].setdefault(
+        head, {"files": [], "children": {}}
+    )
+    insert_into_tree(root["children"][head], tail, entry)
+
+def newest_date(node):
+    dates = [d for _, d in node["files"]]
+    for child in node["children"].values():
+        dates.append(newest_date(child))
+    return max(dates) if dates else "0000-00-00"
+
 # ---------------- Articles ----------------
 
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
-    category = rel.parent.as_posix() or "."
+    parts = rel.parts[:-1]
 
     date = git_commit_date(md_file)
-    tree.setdefault(category, []).append((rel, date))
+    insert_into_tree(tree, list(parts), (rel, date))
 
     html_body = render_md(md_file.read_text())
     title = title_from_file(md_file)
@@ -126,11 +148,12 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree helpers ----------------
 
-def build_tree_for(entries, base_link="articles/") -> str:
+def build_tree(node, prefix="", base_link="articles/"):
     html = ""
-    ordered = sorted(entries, key=lambda x: x[1], reverse=True)
-    for i, (f, date) in enumerate(ordered):
-        branch = "└──" if i == len(ordered) - 1 else "├──"
+
+    files = sorted(node["files"], key=lambda x: x[1], reverse=True)
+    for i, (f, date) in enumerate(files):
+        branch = "└──" if i == len(files) - 1 else "├──"
         title = title_from_file(f)
         link = f"{base_link}{f.with_suffix('.html')}"
         html += (
@@ -141,37 +164,34 @@ def build_tree_for(entries, base_link="articles/") -> str:
             f"<span class='tree-date'> · {date}</span>"
             "</div>"
         )
-    return html
 
-def build_main_tree(tree) -> str:
-    html = "<div class='tree'>"
-
-    ordered_categories = sorted(
-        tree.items(),
-        key=lambda item: max(d for _, d in item[1]),
+    children = sorted(
+        node["children"].items(),
+        key=lambda item: newest_date(item[1]),
         reverse=True,
     )
 
-    for category, entries in ordered_categories:
+    for name, child in children:
+        path = f"{prefix}/{name}" if prefix else name
         html += (
             "<div class='tree-folder'>"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-            f"<a href='articles/{category}/index.html'>{category}</a>"
+            f"<a href='/articles/{path}/index.html'>{name}</a>"
             "</div>"
         )
-        html += build_tree_for(entries)
-    html += "</div>"
+        html += build_tree(child, path, base_link)
+
     return html
 
 # ---------------- Categories ----------------
 
-for category, entries in tree.items():
-    title = category if category != "." else "Articles"
+def build_category_pages(node, path=""):
+    title = path if path else "Articles"
 
     category_html = render(
         category_tpl,
         category_title=title,
-        category_tree=build_tree_for(entries),
+        category_tree=build_tree(node, path),
     )
 
     full_html = render(
@@ -183,9 +203,15 @@ for category, entries in tree.items():
         content=category_html,
     )
 
-    out_dir = OUT / "articles" / category
+    out_dir = OUT / "articles" / path
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
+
+    for name, child in node["children"].items():
+        child_path = f"{path}/{name}" if path else name
+        build_category_pages(child, child_path)
+
+build_category_pages(tree)
 
 # ---------------- Index ----------------
 
@@ -209,7 +235,7 @@ index_html = render(
     theme_css=THEME_CSS,
     content=(
         load_about()
-        + render(tree_tpl, tree=build_main_tree(tree))
+        + render(tree_tpl, tree=build_tree(tree))
         + load_buttons()
     ),
 )
