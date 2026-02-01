@@ -63,8 +63,6 @@ THEME_CSS = load_theme_css()
 # ---------------- Output ----------------
 
 OUT.mkdir(exist_ok=True)
-
-# nested tree structure
 tree = {}
 
 # ---------------- Git commit dates ----------------
@@ -138,7 +136,7 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
-CONTENT_INDENT = " " * 7  # aligns file text under folder text
+CONTENT_INDENT = " " * 7
 
 def build_tree(node, prefix="", depth=0, base_link="articles/"):
     html = ""
@@ -162,8 +160,12 @@ def build_tree(node, prefix="", depth=0, base_link="articles/"):
         is_last = i == len(folders) - 1 and not files
         branch = "└──" if is_last else "├──"
 
+        branch_prefix = (
+            prefix if depth > 1 else ("    " if depth == 1 else "")
+        )
+
         branch_html = (
-            f"<span class='tree-branch'>{prefix}{branch}</span> "
+            f"<span class='tree-branch'>{branch_prefix}{branch}</span> "
             if depth > 0
             else ""
         )
