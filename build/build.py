@@ -63,8 +63,6 @@ THEME_CSS = load_theme_css()
 # ---------------- Output ----------------
 
 OUT.mkdir(exist_ok=True)
-
-# nested tree structure
 tree = {}
 
 # ---------------- Git commit dates ----------------
@@ -138,9 +136,9 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
-CONTENT_INDENT = " " * 7  # aligns with first letter of folder names
+CONTENT_INDENT = " " * 7  # aligns files under folder names
 
-def build_tree(node, prefix="", base_link="articles/"):
+def build_tree(node, prefix="", depth=0, base_link="articles/"):
     html = ""
 
     folders = sorted(
@@ -162,17 +160,22 @@ def build_tree(node, prefix="", base_link="articles/"):
         is_last = i == len(folders) - 1 and not files
         branch = "└──" if is_last else "├──"
 
-        folder_path = folder
+        branch_html = (
+            f"<span class='tree-branch'>{prefix}{branch}</span> "
+            if depth > 0
+            else ""
+        )
+
         html += (
             "<div class='tree-folder'>"
-            f"<span class='tree-branch'>{prefix}{branch}</span> "
+            f"{branch_html}"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-            f"<a href='/articles/{folder_path}/index.html'>{folder}</a>"
+            f"<a href='/articles/{folder}/index.html'>{folder}</a>"
             "</div>"
         )
 
         next_prefix = prefix + ("    " if is_last else "│   ")
-        html += build_tree(node[folder], next_prefix, base_link)
+        html += build_tree(node[folder], next_prefix, depth + 1, base_link)
 
     for i, (f, date) in enumerate(files):
         is_last = i == len(files) - 1
@@ -194,12 +197,9 @@ def build_tree(node, prefix="", base_link="articles/"):
     return html
 
 def build_main_tree(tree):
-    html = "<div class='tree'>"
-    html += build_tree(tree)
-    html += "</div>"
-    return html
+    return "<div class='tree'>" + build_tree(tree) + "</div>"
 
-# ---------------- Categories (flat pages preserved) ----------------
+# ---------------- Categories ----------------
 
 def collect_files(node, acc):
     for f in node.get("__files__", []):
@@ -209,11 +209,7 @@ def collect_files(node, acc):
             collect_files(node[k], acc)
 
 def walk_categories(node, path=()):
-    files = []
-    collect_files(node, files)
-
-    category = "/".join(path) if path else "."
-    title = category if category != "." else "Articles"
+    title = "/".join(path) if path else "Articles"
 
     category_html = render(
         category_tpl,
@@ -230,7 +226,7 @@ def walk_categories(node, path=()):
         content=category_html,
     )
 
-    out_dir = OUT / "articles" / category
+    out_dir = OUT / "articles" / "/".join(path)
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
