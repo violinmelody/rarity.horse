@@ -170,16 +170,24 @@ def render_tree(node, prefix="", path=""):
             name, child = entry[1], entry[2]
             child_path = f"{path}/{name}" if path else name
 
-            html += (
-                "<div class='tree-file tree-folder'>"
-                f"<span class='tree-branch'>{prefix}{branch}</span> "
-                "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-                f"<a href='/articles/{child_path}/index.html'>{name}</a>"
-                "</div>"
-            )
+            if prefix == "":
+                html += (
+                    "<div class='tree-file tree-folder'>"
+                    "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+                    f"<a href='/articles/{child_path}/index.html'>{name}</a>"
+                    "</div>"
+                )
+            else:
+                html += (
+                    "<div class='tree-file tree-folder'>"
+                    f"<span class='tree-branch'>{prefix}{branch}</span> "
+                    "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+                    f"<a href='/articles/{child_path}/index.html'>{name}</a>"
+                    "</div>"
+                )
 
             if prefix == "":
-                next_prefix = "│   "
+                next_prefix = "    " if is_last else "│   "
             else:
                 next_prefix = prefix + ("    " if is_last else "│   ")
 
