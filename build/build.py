@@ -171,7 +171,7 @@ def render_tree(node, prefix="", path=""):
             child_path = f"{path}/{name}" if path else name
 
             html += (
-                "<div class='tree-folder'>"
+                "<div class='tree-file tree-folder'>"
                 f"<span class='tree-branch'>{prefix}{branch}</span> "
                 "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
                 f"<a href='/articles/{child_path}/index.html'>{name}</a>"
