@@ -63,6 +63,8 @@ THEME_CSS = load_theme_css()
 # ---------------- Output ----------------
 
 OUT.mkdir(exist_ok=True)
+
+# nested tree structure
 tree = {}
 
 # ---------------- Git commit dates ----------------
@@ -136,7 +138,7 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
-CONTENT_INDENT = " " * 7  # aligns files under folder names
+CONTENT_INDENT = " " * 7  # aligns file text under folder text
 
 def build_tree(node, prefix="", depth=0, base_link="articles/"):
     html = ""
@@ -174,7 +176,11 @@ def build_tree(node, prefix="", depth=0, base_link="articles/"):
             "</div>"
         )
 
-        next_prefix = prefix + ("    " if is_last else "│   ")
+        if depth == 0:
+            next_prefix = "    "
+        else:
+            next_prefix = prefix + ("    " if is_last else "│   ")
+
         html += build_tree(node[folder], next_prefix, depth + 1, base_link)
 
     for i, (f, date) in enumerate(files):
@@ -200,13 +206,6 @@ def build_main_tree(tree):
     return "<div class='tree'>" + build_tree(tree) + "</div>"
 
 # ---------------- Categories ----------------
-
-def collect_files(node, acc):
-    for f in node.get("__files__", []):
-        acc.append(f)
-    for k in node:
-        if k != "__files__":
-            collect_files(node[k], acc)
 
 def walk_categories(node, path=()):
     title = "/".join(path) if path else "Articles"
