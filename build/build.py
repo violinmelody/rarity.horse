@@ -94,15 +94,13 @@ def git_commit_date(file_path: Path) -> str:
 
 # ---------------- Tree building ----------------
 
-def insert_into_tree(root, parts, entry):
+def insert_into_tree(node, parts, entry):
     if not parts:
-        root["files"].append(entry)
+        node["files"].append(entry)
         return
     head, *tail = parts
-    root["children"].setdefault(
-        head, {"files": [], "children": {}}
-    )
-    insert_into_tree(root["children"][head], tail, entry)
+    node["children"].setdefault(head, {"files": [], "children": {}})
+    insert_into_tree(node["children"][head], tail, entry)
 
 def newest_date(node):
     dates = [d for _, d in node["files"]]
@@ -114,10 +112,10 @@ def newest_date(node):
 
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
-    parts = rel.parts[:-1]
+    parts = list(rel.parts[:-1])
 
     date = git_commit_date(md_file)
-    insert_into_tree(tree, list(parts), (rel, date))
+    insert_into_tree(tree, parts, (rel, date))
 
     html_body = render_md(md_file.read_text())
     title = title_from_file(md_file)
@@ -148,10 +146,8 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree helpers ----------------
 
-def build_tree(node, path="", depth=0, base_link="articles/"):
+def render_tree(node, prefix="", path=""):
     html = ""
-
-    indent = depth * 1.6
 
     children = sorted(
         node["children"].items(),
@@ -159,32 +155,50 @@ def build_tree(node, path="", depth=0, base_link="articles/"):
         reverse=True,
     )
 
-    for name, child in children:
-        child_path = f"{path}/{name}" if path else name
-
-        html += (
-            f"<div class='tree-folder' style='padding-left: {indent}rem'>"
-            "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-            f"<a href='/articles/{child_path}/index.html'>{name}</a>"
-            "</div>"
-        )
-
-        html += build_tree(child, child_path, depth + 1, base_link)
-
     files = sorted(node["files"], key=lambda x: x[1], reverse=True)
-    for f, date in files:
-        title = title_from_file(f)
-        link = f"{base_link}{f.with_suffix('.html')}"
 
-        html += (
-            f"<div class='tree-file' style='padding-left: {indent}rem'>"
-            "<img src='/theme/icons/file_gem.png' alt='[f]'> "
-            f"<a href='/{link}'>{title}</a>"
-            f"<span class='tree-date'> · {date}</span>"
-            "</div>"
-        )
+    entries = (
+        [("dir", name, child) for name, child in children]
+        + [("file", f, d) for f, d in files]
+    )
+
+    for i, entry in enumerate(entries):
+        is_last = i == len(entries) - 1
+        branch = "└──" if is_last else "├──"
+
+        if entry[0] == "dir":
+            name, child = entry[1], entry[2]
+            child_path = f"{path}/{name}" if path else name
+
+            html += (
+                "<div class='tree-folder'>"
+                f"<span class='tree-branch'>{prefix}{branch}</span> "
+                "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+                f"<a href='/articles/{child_path}/index.html'>{name}</a>"
+                "</div>"
+            )
+
+            next_prefix = prefix + ("    " if is_last else "│   ")
+            html += render_tree(child, next_prefix, child_path)
+
+        else:
+            f, date = entry[1], entry[2]
+            title = title_from_file(f)
+            link = f"articles/{f.with_suffix('.html')}"
+
+            html += (
+                "<div class='tree-file'>"
+                f"<span class='tree-branch'>{prefix}{branch}</span> "
+                "<img src='/theme/icons/file_gem.png' alt='[f]'> "
+                f"<a href='/{link}'>{title}</a>"
+                f"<span class='tree-date'> · {date}</span>"
+                "</div>"
+            )
 
     return html
+
+def build_main_tree(tree) -> str:
+    return "<div class='tree'>" + render_tree(tree) + "</div>"
 
 # ---------------- Categories ----------------
 
@@ -194,7 +208,7 @@ def build_category_pages(node, path=""):
     category_html = render(
         category_tpl,
         category_title=title,
-        category_tree=build_tree(node, path),
+        category_tree=render_tree(node, path=path),
     )
 
     full_html = render(
@@ -238,7 +252,7 @@ index_html = render(
     theme_css=THEME_CSS,
     content=(
         load_about()
-        + render(tree_tpl, tree=build_tree(tree))
+        + render(tree_tpl, tree=build_main_tree(tree))
         + load_buttons()
     ),
 )
