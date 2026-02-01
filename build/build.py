@@ -64,10 +64,8 @@ THEME_CSS = load_theme_css()
 
 OUT.mkdir(exist_ok=True)
 
-tree = {
-    "files": [],
-    "children": {},
-}
+# nested tree structure
+tree = {}
 
 # ---------------- Git commit dates ----------------
 
@@ -94,28 +92,22 @@ def git_commit_date(file_path: Path) -> str:
 
 # ---------------- Tree building ----------------
 
-def insert_into_tree(node, parts, entry):
+def insert_into_tree(node, parts, rel_path, date):
     if not parts:
-        node["files"].append(entry)
+        node.setdefault("__files__", []).append((rel_path, date))
         return
-    head, *tail = parts
-    node["children"].setdefault(head, {"files": [], "children": {}})
-    insert_into_tree(node["children"][head], tail, entry)
-
-def newest_date(node):
-    dates = [d for _, d in node["files"]]
-    for child in node["children"].values():
-        dates.append(newest_date(child))
-    return max(dates) if dates else "0000-00-00"
+    head = parts[0]
+    node.setdefault(head, {})
+    insert_into_tree(node[head], parts[1:], rel_path, date)
 
 # ---------------- Articles ----------------
 
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
-    parts = list(rel.parts[:-1])
+    parts = list(rel.parent.parts)
 
     date = git_commit_date(md_file)
-    insert_into_tree(tree, parts, (rel, date))
+    insert_into_tree(tree, parts, rel, date)
 
     html_body = render_md(md_file.read_text())
     title = title_from_file(md_file)
@@ -144,83 +136,89 @@ for md_file in CONTENT.rglob("*.md"):
     if img_dir.exists():
         shutil.copytree(img_dir, out_file.parent / img_dir.name, dirs_exist_ok=True)
 
-# ---------------- Tree helpers ----------------
+# ---------------- Tree rendering ----------------
 
-def render_tree(node, prefix="", path=""):
+CONTENT_INDENT = " " * 7  # aligns with first letter of folder names
+
+def build_tree(node, prefix="", base_link="articles/"):
     html = ""
 
-    children = sorted(
-        node["children"].items(),
-        key=lambda item: newest_date(item[1]),
+    folders = sorted(
+        (k for k in node.keys() if k != "__files__"),
+        key=lambda k: max(
+            (d for _, d in node[k].get("__files__", [])),
+            default="0000-00-00",
+        ),
         reverse=True,
     )
 
-    files = sorted(node["files"], key=lambda x: x[1], reverse=True)
-
-    entries = (
-        [("dir", name, child) for name, child in children]
-        + [("file", f, d) for f, d in files]
+    files = sorted(
+        node.get("__files__", []),
+        key=lambda x: x[1],
+        reverse=True,
     )
 
-    for i, entry in enumerate(entries):
-        is_last = i == len(entries) - 1
+    for i, folder in enumerate(folders):
+        is_last = i == len(folders) - 1 and not files
         branch = "└──" if is_last else "├──"
 
-        if entry[0] == "dir":
-            name, child = entry[1], entry[2]
-            child_path = f"{path}/{name}" if path else name
+        folder_path = folder
+        html += (
+            "<div class='tree-folder'>"
+            f"<span class='tree-branch'>{prefix}{branch}</span> "
+            "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+            f"<a href='/articles/{folder_path}/index.html'>{folder}</a>"
+            "</div>"
+        )
 
-            if prefix == "":
-                html += (
-                    "<div class='tree-file tree-folder'>"
-                    "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-                    f"<a href='/articles/{child_path}/index.html'>{name}</a>"
-                    "</div>"
-                )
-            else:
-                html += (
-                    "<div class='tree-file tree-folder'>"
-                    f"<span class='tree-branch'>{prefix}{branch}</span> "
-                    "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-                    f"<a href='/articles/{child_path}/index.html'>{name}</a>"
-                    "</div>"
-                )
+        next_prefix = prefix + ("    " if is_last else "│   ")
+        html += build_tree(node[folder], next_prefix, base_link)
 
-            if prefix == "":
-                next_prefix = "    " if is_last else "│   "
-            else:
-                next_prefix = prefix + ("    " if is_last else "│   ")
+    for i, (f, date) in enumerate(files):
+        is_last = i == len(files) - 1
+        branch = "└──" if is_last else "├──"
 
-            html += render_tree(child, next_prefix, child_path)
+        aligned_prefix = prefix.replace("│", "│" + CONTENT_INDENT)
+        link = f"{base_link}{f.with_suffix('.html')}"
+        title = title_from_file(f)
 
-        else:
-            f, date = entry[1], entry[2]
-            title = title_from_file(f)
-            link = f"articles/{f.with_suffix('.html')}"
-
-            html += (
-                "<div class='tree-file'>"
-                f"<span class='tree-branch'>{prefix}{branch}</span> "
-                "<img src='/theme/icons/file_gem.png' alt='[f]'> "
-                f"<a href='/{link}'>{title}</a>"
-                f"<span class='tree-date'> · {date}</span>"
-                "</div>"
-            )
+        html += (
+            "<div class='tree-file'>"
+            f"<span class='tree-branch'>{aligned_prefix}{branch}</span> "
+            "<img src='/theme/icons/file_gem.png' alt='[f]'> "
+            f"<a href='/{link}'>{title}</a>"
+            f"<span class='tree-date'> · {date}</span>"
+            "</div>"
+        )
 
     return html
 
-def build_main_tree(tree) -> str:
-    return "<div class='tree'>" + render_tree(tree) + "</div>"
+def build_main_tree(tree):
+    html = "<div class='tree'>"
+    html += build_tree(tree)
+    html += "</div>"
+    return html
 
-# ---------------- Categories ----------------
+# ---------------- Categories (flat pages preserved) ----------------
 
-def build_category_pages(node, path=""):
-    title = path if path else "Articles"
+def collect_files(node, acc):
+    for f in node.get("__files__", []):
+        acc.append(f)
+    for k in node:
+        if k != "__files__":
+            collect_files(node[k], acc)
+
+def walk_categories(node, path=()):
+    files = []
+    collect_files(node, files)
+
+    category = "/".join(path) if path else "."
+    title = category if category != "." else "Articles"
 
     category_html = render(
         category_tpl,
         category_title=title,
-        category_tree=render_tree(node, path=path),
+        category_tree=build_tree(node),
     )
 
     full_html = render(
@@ -232,15 +230,15 @@ def build_category_pages(node, path=""):
         content=category_html,
     )
 
-    out_dir = OUT / "articles" / path
+    out_dir = OUT / "articles" / category
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "index.html").write_text(full_html)
 
-    for name, child in node["children"].items():
-        child_path = f"{path}/{name}" if path else name
-        build_category_pages(child, child_path)
+    for k in node:
+        if k != "__files__":
+            walk_categories(node[k], path + (k,))
 
-build_category_pages(tree)
+walk_categories(tree)
 
 # ---------------- Index ----------------
 
