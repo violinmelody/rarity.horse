@@ -98,14 +98,22 @@ def insert_into_tree(node, parts, rel_path, date):
     node.setdefault(head, {})
     insert_into_tree(node[head], parts[1:], rel_path, date)
 
+def newest_date(node):
+    dates = [d for _, d in node.get("__files__", [])]
+    for k in node:
+        if k != "__files__":
+            child_date = newest_date(node[k])
+            if child_date:
+                dates.append(child_date)
+    return max(dates) if dates else ""
+
 # ---------------- Articles ----------------
 
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
-    parts = list(rel.parent.parts)
-
     date = git_commit_date(md_file)
-    insert_into_tree(tree, parts, rel, date)
+
+    insert_into_tree(tree, list(rel.parent.parts), rel, date)
 
     html_body = render_md(md_file.read_text())
     title = title_from_file(md_file)
@@ -136,17 +144,12 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
-CONTENT_INDENT = " " * 7
-
-def build_tree(node, prefix="", depth=0, base_link="articles/"):
+def build_tree(node, prefix="", depth=0):
     html = ""
 
     folders = sorted(
-        (k for k in node.keys() if k != "__files__"),
-        key=lambda k: max(
-            (d for _, d in node[k].get("__files__", [])),
-            default="0000-00-00",
-        ),
+        (k for k in node if k != "__files__"),
+        key=lambda k: newest_date(node[k]),
         reverse=True,
     )
 
@@ -158,46 +161,38 @@ def build_tree(node, prefix="", depth=0, base_link="articles/"):
 
     for i, folder in enumerate(folders):
         is_last = i == len(folders) - 1 and not files
+
+        if depth == 0:
+            html += (
+                "<div class='tree-folder'>"
+                "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+                f"<a href='/articles/{folder}/index.html'>{folder}</a>"
+                "</div>"
+            )
+            html += build_tree(node[folder], "    ", depth + 1)
+            continue
+
         branch = "└──" if is_last else "├──"
-
-        branch_prefix = (
-            prefix if depth > 1 else ("    " if depth == 1 else "")
-        )
-
-        branch_html = (
-            f"<span class='tree-branch'>{branch_prefix}{branch}</span> "
-            if depth > 0
-            else ""
-        )
-
         html += (
             "<div class='tree-folder'>"
-            f"{branch_html}"
+            f"<span class='tree-branch'>{prefix}{branch}</span> "
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
             f"<a href='/articles/{folder}/index.html'>{folder}</a>"
             "</div>"
         )
 
-        if depth == 0:
-            next_prefix = "    "
-        else:
-            next_prefix = prefix + ("    " if is_last else "│   ")
-
-        html += build_tree(node[folder], next_prefix, depth + 1, base_link)
+        next_prefix = prefix + ("    " if is_last else "│   ")
+        html += build_tree(node[folder], next_prefix, depth + 1)
 
     for i, (f, date) in enumerate(files):
-        is_last = i == len(files) - 1
-        branch = "└──" if is_last else "├──"
-
-        aligned_prefix = prefix.replace("│", "│" + CONTENT_INDENT)
-        link = f"{base_link}{f.with_suffix('.html')}"
+        branch = "└──" if i == len(files) - 1 else "├──"
         title = title_from_file(f)
 
         html += (
             "<div class='tree-file'>"
-            f"<span class='tree-branch'>{aligned_prefix}{branch}</span> "
+            f"<span class='tree-branch'>{prefix}{branch}</span> "
             "<img src='/theme/icons/file_gem.png' alt='[f]'> "
-            f"<a href='/{link}'>{title}</a>"
+            f"<a href='/articles/{f.with_suffix('.html')}'>{title}</a>"
             f"<span class='tree-date'> · {date}</span>"
             "</div>"
         )
