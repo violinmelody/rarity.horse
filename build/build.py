@@ -102,9 +102,9 @@ def newest_date(node):
     dates = [d for _, d in node.get("__files__", [])]
     for k in node:
         if k != "__files__":
-            child_date = newest_date(node[k])
-            if child_date:
-                dates.append(child_date)
+            d = newest_date(node[k])
+            if d:
+                dates.append(d)
     return max(dates) if dates else ""
 
 # ---------------- Articles ----------------
@@ -238,7 +238,11 @@ def load_about() -> str:
     f = META / "about.md"
     if not f.exists():
         return ""
-    return f"<section class='about'><div class='markdown'>{render_md(f.read_text())}</div></section>"
+    return (
+        "<section class='about'>"
+        f"<div class='markdown'>{render_md(f.read_text())}</div>"
+        "</section>"
+    )
 
 def load_buttons() -> str:
     f = META / "buttons.md"
