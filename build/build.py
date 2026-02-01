@@ -128,8 +128,9 @@ for md_file in CONTENT.rglob("*.md"):
 
 def build_tree_for(entries, base_link="articles/") -> str:
     html = ""
-    for i, (f, date) in enumerate(sorted(entries)):
-        branch = "└──" if i == len(entries) - 1 else "├──"
+    ordered = sorted(entries, key=lambda x: x[1], reverse=True)
+    for i, (f, date) in enumerate(ordered):
+        branch = "└──" if i == len(ordered) - 1 else "├──"
         title = title_from_file(f)
         link = f"{base_link}{f.with_suffix('.html')}"
         html += (
@@ -144,7 +145,14 @@ def build_tree_for(entries, base_link="articles/") -> str:
 
 def build_main_tree(tree) -> str:
     html = "<div class='tree'>"
-    for category, entries in sorted(tree.items()):
+
+    ordered_categories = sorted(
+        tree.items(),
+        key=lambda item: max(d for _, d in item[1]),
+        reverse=True,
+    )
+
+    for category, entries in ordered_categories:
         html += (
             "<div class='tree-folder'>"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
