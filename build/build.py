@@ -178,7 +178,11 @@ def render_tree(node, prefix="", path=""):
                 "</div>"
             )
 
-            next_prefix = prefix + ("    " if is_last else "│   ")
+            if prefix == "":
+                next_prefix = "│   "
+            else:
+                next_prefix = prefix + ("    " if is_last else "│   ")
+
             html += render_tree(child, next_prefix, child_path)
 
         else:
