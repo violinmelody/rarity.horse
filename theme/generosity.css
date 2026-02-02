@@ -267,6 +267,16 @@ article,
   overflow-x: auto;
 }
 
+.markdown .signature {
+  display: block;
+  margin-top: 2rem;
+  text-align: left;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px var(--accent-soft);
+}
+
 a {
   color: var(--accent);
   text-decoration: none;
