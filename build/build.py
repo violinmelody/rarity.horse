@@ -3,6 +3,8 @@ from pathlib import Path
 from datetime import datetime
 import markdown
 import subprocess
+import html
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = Path("content/articles")
@@ -157,8 +159,29 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
-def render_tree(node, prefix="", depth=0):
-    html = ""
+def _tree_html(s: str) -> str:
+    """
+    Preserve tree spacing in HTML without any CSS edits.
+    Browsers collapse normal spaces, so we convert spaces to &nbsp;.
+    """
+    return html.escape(s).replace(" ", "&nbsp;")
+
+def _url_quote_path(p: str) -> str:
+    """
+    Quote URL path while keeping slashes so nested folders work.
+    """
+    return quote(p, safe="/")
+
+def render_tree(node, prefix="", depth=0, path=()):
+    """
+    Tree renderer that supports arbitrary nesting and correct nested links.
+
+    Uses ASCII drawing:
+      ├──   for middle items
+      └──   for last items
+      │     for vertical continuation
+    """
+    html_out = ""
 
     folders = sorted(
         (k for k in node if k != "__files__"),
@@ -167,44 +190,63 @@ def render_tree(node, prefix="", depth=0):
     )
     files = sorted(node.get("__files__", []), key=lambda x: x[1], reverse=True)
 
-    for i, folder in enumerate(folders):
-        is_last = i == len(folders) - 1 and not files
+    # Determine "last" correctly across folders + files
+    items = [("folder", f) for f in folders] + [("file", f, d) for (f, d) in files]
 
-        branch = "└──" if is_last else "├──"
-        branch_text = branch if depth > 0 else ""
+    for idx, entry in enumerate(items):
+        is_last = idx == len(items) - 1
+        branch = "└── " if is_last else "├── "
 
-        html += (
-            "<div class='tree-folder'>"
-            f"<span class='tree-branch'>{prefix}{branch_text}</span>"
-            "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-            f"<a href='/articles/{folder}/index.html'>{folder}</a>"
-            "</div>"
-        )
+        if entry[0] == "folder":
+            folder = entry[1]
 
-        if depth == 0:
-            next_prefix = "     "
+            # Keep the original "root folders are headings" feel:
+            # no branch at depth 0, but branches for nested folders.
+            show_branch = depth > 0
+            line_prefix = prefix + (branch if show_branch else "")
+
+            folder_rel = "/".join((*path, folder))
+            folder_href = "/articles/" + _url_quote_path(folder_rel) + "/index.html"
+
+            html_out += (
+                "<div class='tree-folder'>"
+                f"<span class='tree-branch'>{_tree_html(line_prefix + '[+] ')}</span>"
+                f"<a href='{html.escape(folder_href)}'>{html.escape(folder)}</a>"
+                "</div>"
+            )
+
+            # Child prefix: continue vertical line if this folder isn't last.
+            child_prefix = prefix + ("    " if is_last else "│   ")
+
+            # For top-level headings (depth==0), just indent children.
+            if depth == 0:
+                child_prefix = prefix + "    "
+
+            html_out += render_tree(
+                node[folder],
+                prefix=child_prefix,
+                depth=depth + 1,
+                path=path + (folder,),
+            )
+
         else:
-            next_prefix = prefix + ("     " if is_last else "│    ")
+            f, date = entry[1], entry[2]
 
-        html += render_tree(node[folder], next_prefix, depth + 1)
+            file_rel_html = f.with_suffix(".html").as_posix()
+            file_href = "/articles/" + _url_quote_path(file_rel_html)
 
-    for i, (f, date) in enumerate(files):
-        is_last = i == len(files) - 1
-        branch = "└──" if is_last else "├──"
+            html_out += (
+                "<div class='tree-file' style='margin-left:0; padding-left:0;'>"
+                f"<span class='tree-branch'>{_tree_html(prefix + branch + '[f] ')}</span>"
+                f"<a href='{html.escape(file_href)}'>{html.escape(title_from_file(f))}</a>"
+                f"<span class='tree-date'> · {html.escape(date)}</span>"
+                "</div>"
+            )
 
-        html += (
-            "<div class='tree-file'>"
-            f"<span class='tree-branch'>{prefix}{branch}</span>"
-            "<img src='/theme/icons/file_gem.png' alt='[f]'> "
-            f"<a href='/articles/{f.with_suffix('.html')}'>{title_from_file(f)}</a>"
-            f"<span class='tree-date'> · {date}</span>"
-            "</div>"
-        )
-
-    return html
+    return html_out
 
 def build_main_tree():
-    return "<div class='tree'>" + render_tree(tree) + "</div>"
+    return "<div class='tree'>" + render_tree(tree, path=()) + "</div>"
 
 # ---------------- Categories ----------------
 
@@ -214,7 +256,7 @@ def build_categories(node, path=()):
     category_html = render(
         category_tpl,
         category_title=title,
-        category_tree=render_tree(node),
+        category_tree=render_tree(node, path=path),
     )
 
     full_html = render(
