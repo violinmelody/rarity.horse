@@ -81,6 +81,7 @@ content/
    ├─ title.md
    ├─ motd.md
    ├─ about.md
+   ├─ footer.md
    ├─ theme.md
    ├─ buttons.md
    └─ buttons/
@@ -105,6 +106,7 @@ content/
 | buttons.md | Buttons section on the home page |
 | buttons | Buttons images |
 | theme.md | Site CSS theme, see theme folder for available options |
+| footer.md | Footer section on the site |
 | about.md | About section on the home page |
 | motd.md | Site message under the title |
 | title.md | Site title |
