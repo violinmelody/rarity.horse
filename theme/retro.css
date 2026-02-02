@@ -121,6 +121,23 @@ article,
   font-size: 13px;
 }
 
+.markdown img {
+  max-width: 100%;
+  display: block;
+  margin: 1rem auto;
+}
+
+.markdown .signature {
+  display: block;
+  margin-top: 1.6rem;
+  text-align: left;
+  font-weight: bold;
+  font-style: italic;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px var(--muted);
+}
+
 /* ---------- LINKS ---------- */
 
 a {
