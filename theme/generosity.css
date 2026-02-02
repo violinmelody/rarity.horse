@@ -267,7 +267,7 @@ article,
   overflow-x: auto;
 }
 
-.markdown signature {
+.markdown .signature {
   display: block;
   margin-top: 1.6rem;
   text-align: left;
