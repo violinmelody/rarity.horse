@@ -41,7 +41,7 @@ def preprocess_markdown(text: str) -> str:
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("~") and " " not in stripped:
-            out.append(f"<span class='signature'>{stripped}</span>")
+            out.append(f"<p class="signature">{stripped}</p>")
         else:
             out.append(line)
     return "\n".join(out)
