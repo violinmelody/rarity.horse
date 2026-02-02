@@ -165,9 +165,9 @@ def render_tree(node, prefix="", depth=0):
         # IMPORTANT FIX:
         # Only propagate │ if depth >= 1
         if depth == 0:
-            next_prefix = "    "
+            next_prefix = "   "
         else:
-            next_prefix = prefix + ("    " if is_last else "│   ")
+            next_prefix = prefix + ("   " if is_last else "│   ")
 
         html += render_tree(node[folder], next_prefix, depth + 1)
 
