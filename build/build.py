@@ -160,8 +160,8 @@ for md_file in CONTENT.rglob("*.md"):
 # ---------------- Tree rendering ----------------
 
 # Indent segments
-INDENT = "    "   # 4 spaces
-PIPE = "│      "     # '│' + 6 spaces
+INDENT = "        "   # 8 spaces
+PIPE = "│       "     # '│' + 7 spaces
 
 def _tree_html(s: str) -> str:
     """
