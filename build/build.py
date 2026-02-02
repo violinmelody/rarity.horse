@@ -159,6 +159,10 @@ for md_file in CONTENT.rglob("*.md"):
 
 # ---------------- Tree rendering ----------------
 
+# 5-wide indent segments (matches the original build.py spacing, but rendered safely in HTML)
+INDENT = "     "   # 5 spaces
+PIPE = "│    "     # '│' + 4 spaces
+
 def _tree_html(s: str) -> str:
     """
     Preserve box-drawing alignment in HTML without editing CSS.
@@ -180,6 +184,8 @@ def render_tree(node, prefix="", depth=0, path=()):
       ├──  middle entries
       └──  last entries
       │    vertical continuation
+
+    Spacing is 5-wide per level to keep the “gaps” consistent even at depth 2+.
     """
     html_out = ""
 
@@ -194,7 +200,7 @@ def render_tree(node, prefix="", depth=0, path=()):
 
     for idx, entry in enumerate(entries):
         is_last = idx == len(entries) - 1
-        connector = "└── " if is_last else "├── "
+        connector = ("└── " if is_last else "├── ")
 
         if entry[0] == "folder":
             folder = entry[1]
@@ -219,9 +225,9 @@ def render_tree(node, prefix="", depth=0, path=()):
             )
 
             if depth == 0:
-                next_prefix = "    "
+                next_prefix = INDENT
             else:
-                next_prefix = prefix + ("    " if is_last else "│   ")
+                next_prefix = prefix + (INDENT if is_last else PIPE)
 
             html_out += render_tree(
                 node[folder],
@@ -236,7 +242,7 @@ def render_tree(node, prefix="", depth=0, path=()):
             file_rel_html = f.with_suffix(".html").as_posix()
             file_href = "/articles/" + _url_quote_path(file_rel_html)
 
-            # Override theme-specific indent that breaks tree alignment.
+            # Override theme-specific indent/padding that can break tree alignment.
             html_out += (
                 "<div class='tree-file' style='margin-left:0; padding-left:0;'>"
                 f"<span class='tree-branch'>{_tree_html(prefix + connector)}</span>"
