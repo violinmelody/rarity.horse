@@ -161,25 +161,25 @@ for md_file in CONTENT.rglob("*.md"):
 
 def _tree_html(s: str) -> str:
     """
-    Preserve tree spacing in HTML without any CSS edits.
-    Browsers collapse normal spaces, so we convert spaces to &nbsp;.
+    Preserve box-drawing alignment in HTML without editing CSS.
+    Browsers collapse normal spaces, so we convert them to &nbsp;.
     """
     return html.escape(s).replace(" ", "&nbsp;")
 
 def _url_quote_path(p: str) -> str:
     """
-    Quote URL path while keeping slashes so nested folders work.
+    Quote a URL path while keeping slashes so nested folders work.
     """
     return quote(p, safe="/")
 
 def render_tree(node, prefix="", depth=0, path=()):
     """
-    Tree renderer that supports arbitrary nesting and correct nested links.
+    Unicode box-drawing tree renderer that supports arbitrary nesting.
 
-    Uses ASCII drawing:
-      ├──   for middle items
-      └──   for last items
-      │     for vertical continuation
+    Uses:
+      ├──  middle entries
+      └──  last entries
+      │    vertical continuation
     """
     html_out = ""
 
@@ -190,41 +190,42 @@ def render_tree(node, prefix="", depth=0, path=()):
     )
     files = sorted(node.get("__files__", []), key=lambda x: x[1], reverse=True)
 
-    # Determine "last" correctly across folders + files
-    items = [("folder", f) for f in folders] + [("file", f, d) for (f, d) in files]
+    entries = [("folder", f) for f in folders] + [("file", f, d) for (f, d) in files]
 
-    for idx, entry in enumerate(items):
-        is_last = idx == len(items) - 1
-        branch = "└── " if is_last else "├── "
+    for idx, entry in enumerate(entries):
+        is_last = idx == len(entries) - 1
+        connector = "└── " if is_last else "├── "
 
         if entry[0] == "folder":
             folder = entry[1]
 
-            # Keep the original "root folders are headings" feel:
-            # no branch at depth 0, but branches for nested folders.
-            show_branch = depth > 0
-            line_prefix = prefix + (branch if show_branch else "")
+            # Keep the "top-level folder as heading" look:
+            # no connector at depth 0, but connectors for nested folders.
+            show_connector = depth > 0
+            line_prefix = prefix + (connector if show_connector else "")
 
             folder_rel = "/".join((*path, folder))
             folder_href = "/articles/" + _url_quote_path(folder_rel) + "/index.html"
 
+            # Nested folders shouldn't get the big .tree-folder margin-top
+            folder_style = "" if depth == 0 else " style='margin-top:0;'"
+
             html_out += (
-                "<div class='tree-folder'>"
-                f"<span class='tree-branch'>{_tree_html(line_prefix + '[+] ')}</span>"
+                "<div class='tree-folder'" + folder_style + ">"
+                f"<span class='tree-branch'>{_tree_html(line_prefix)}</span>"
+                "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
                 f"<a href='{html.escape(folder_href)}'>{html.escape(folder)}</a>"
                 "</div>"
             )
 
-            # Child prefix: continue vertical line if this folder isn't last.
-            child_prefix = prefix + ("    " if is_last else "│   ")
-
-            # For top-level headings (depth==0), just indent children.
             if depth == 0:
-                child_prefix = prefix + "    "
+                next_prefix = "    "
+            else:
+                next_prefix = prefix + ("    " if is_last else "│   ")
 
             html_out += render_tree(
                 node[folder],
-                prefix=child_prefix,
+                prefix=next_prefix,
                 depth=depth + 1,
                 path=path + (folder,),
             )
@@ -235,9 +236,11 @@ def render_tree(node, prefix="", depth=0, path=()):
             file_rel_html = f.with_suffix(".html").as_posix()
             file_href = "/articles/" + _url_quote_path(file_rel_html)
 
+            # Override theme-specific indent that breaks tree alignment.
             html_out += (
                 "<div class='tree-file' style='margin-left:0; padding-left:0;'>"
-                f"<span class='tree-branch'>{_tree_html(prefix + branch + '[f] ')}</span>"
+                f"<span class='tree-branch'>{_tree_html(prefix + connector)}</span>"
+                "<img src='/theme/icons/file_gem.png' alt='[f]'> "
                 f"<a href='{html.escape(file_href)}'>{html.escape(title_from_file(f))}</a>"
                 f"<span class='tree-date'> · {html.escape(date)}</span>"
                 "</div>"
