@@ -45,16 +45,14 @@ def load_meta_file(name: str, default: str = "") -> str:
 SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
 
-# ---------------- Theme selection ----------------
+# ---------------- Theme ----------------
 
 def load_theme_css() -> str:
     raw = load_meta_file("theme.md", "boutique").strip().lower()
     if not raw:
         raw = "boutique"
-    candidate = f"{raw}.css"
-    if (THEME / candidate).exists():
-        return candidate
-    return "boutique.css"
+    css = f"{raw}.css"
+    return css if (THEME / css).exists() else "boutique.css"
 
 THEME_CSS = load_theme_css()
 
@@ -83,7 +81,6 @@ def git_commit_date(file_path: Path) -> str:
             return out[:10]
     except Exception:
         pass
-
     return datetime.fromtimestamp(file_path.stat().st_mtime).strftime("%Y-%m-%d")
 
 # ---------------- Tree construction ----------------
@@ -109,7 +106,6 @@ def newest_date(node):
 for md_file in CONTENT.rglob("*.md"):
     rel = md_file.relative_to(CONTENT)
     date = git_commit_date(md_file)
-
     insert(tree, list(rel.parent.parts), rel, date)
 
     html_body = render_md(md_file.read_text())
@@ -153,19 +149,26 @@ def render_tree(node, prefix="", depth=0):
 
     for i, folder in enumerate(folders):
         is_last = i == len(folders) - 1 and not files
-        branch = "└── " if is_last else "├── "
 
-        indent = prefix + (branch if depth > 0 else "")
+        # Branch only after depth 0
+        branch = "└── " if is_last else "├── "
+        branch_text = branch if depth > 0 else ""
 
         html += (
             "<div class='tree-folder'>"
-            f"<span class='tree-branch'>{indent}</span>"
+            f"<span class='tree-branch'>{prefix}{branch_text}</span>"
             "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
             f"<a href='/articles/{folder}/index.html'>{folder}</a>"
             "</div>"
         )
 
-        next_prefix = prefix + ("    " if is_last else "│   ")
+        # IMPORTANT FIX:
+        # Only propagate │ if depth >= 1
+        if depth == 0:
+            next_prefix = "    "
+        else:
+            next_prefix = prefix + ("    " if is_last else "│   ")
+
         html += render_tree(node[folder], next_prefix, depth + 1)
 
     for i, (f, date) in enumerate(files):
