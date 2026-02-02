@@ -34,14 +34,12 @@ def preprocess_markdown(text: str) -> str:
     """
     A signature is a standalone markdown line:
         ~Name
-
-    No spaces, no inline usage, no magic.
     """
     out = []
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("~") and " " not in stripped:
-            out.append(f"<p class="signature">{stripped}</p>")
+            out.append(f"<p class='signature'>{stripped}</p>")
         else:
             out.append(line)
     return "\n".join(out)
