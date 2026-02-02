@@ -12,12 +12,26 @@ permissions:
   pages: write
   id-token: write
 
+# Optional but recommended to prevent deploy races
+concurrency:
+  group: "github-pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # --- PRE-CLEAN ---
+      - name: Pre-clean workspace
+        run: |
+          rm -rf wwwroot content
+          rm -rf __pycache__ .pytest_cache .mypy_cache
+
       - name: Checkout engine
         uses: actions/checkout@v4
+        with:
+          clean: true
+          persist-credentials: false
 
       - name: Checkout content
         uses: actions/checkout@v4
@@ -27,14 +41,23 @@ jobs:
           token: ${{ secrets.RARITY_CONTENT_REPO_TOKEN }}
           fetch-depth: 0
           ref: main
+          clean: true
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
         run: pip install markdown
+
+      # Ensures no stale files in output directory even if we don't wipe it
+      - name: Ensure clean output directory
+        run: |
+          rm -rf wwwroot
+          mkdir -p wwwroot
 
       - name: Build site
         run: python build/build.py
@@ -44,10 +67,19 @@ jobs:
         with:
           path: wwwroot
 
+      # --- POST CLEANUP ---
+      - name: Post-clean workspace
+        if: always()
+        run: |
+          rm -rf wwwroot content
+          rm -rf __pycache__ .pytest_cache .mypy_cache
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
