@@ -36,8 +36,8 @@ def render_md(text: str) -> str:
 def title_from_file(p: Path) -> str:
     return p.stem.replace("_", " ").title()
 
-def link_from_file(p: Path) -> str:
-    return p.stem.replace(" ", "_").title()
+def link_from_file(l: Path) -> str:
+    return l.stem.replace(" ", "_").title()
 
 # ---------------- Meta ----------------
 
@@ -47,6 +47,7 @@ def load_meta_file(name: str, default: str = "") -> str:
 
 SITE_TITLE = load_meta_file("title.md", "✦ RARITY.HORSE ✦")
 SITE_MOTD = load_meta_file("motd.md", "generosity is magic, darling~")
+SITE_FOOTER = load_meta_file("footer.md", "handcrafted • static • beautiful")
 
 # ---------------- Theme ----------------
 
@@ -182,7 +183,7 @@ def render_tree(node, prefix="", depth=0):
             "<div class='tree-file'>"
             f"<span class='tree-branch'>{prefix}{branch}</span>"
             "<img src='/theme/icons/file_gem.png' alt='[f]'> "
-            f"<a href='/articles/{f.with_suffix('.html')}'>{link_from_file(f)}</a>"
+            f"<a href='/articles/{f.with_suffix('.html')}'>{title_from_file(f)}</a>"
             f"<span class='tree-date'> · {date}</span>"
             "</div>"
         )
