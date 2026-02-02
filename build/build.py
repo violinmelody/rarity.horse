@@ -162,27 +162,25 @@ def build_tree(node, prefix="", depth=0):
     for i, folder in enumerate(folders):
         is_last = i == len(folders) - 1 and not files
 
-        if depth == 0:
+        if depth < 2:
             html += (
                 "<div class='tree-folder'>"
                 "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
                 f"<a href='/articles/{folder}/index.html'>{folder}</a>"
                 "</div>"
             )
-            html += build_tree(node[folder], "    ", depth + 1)
-            continue
-
-        branch = "└──" if is_last else "├──"
-        html += (
-            "<div class='tree-folder'>"
-            f"<span class='tree-branch'>{prefix}{branch}</span> "
-            "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
-            f"<a href='/articles/{folder}/index.html'>{folder}</a>"
-            "</div>"
-        )
-
-        next_prefix = prefix + ("    " if is_last else "│   ")
-        html += build_tree(node[folder], next_prefix, depth + 1)
+            html += build_tree(node[folder], prefix + "    ", depth + 1)
+        else:
+            branch = "└──" if is_last else "├──"
+            html += (
+                "<div class='tree-folder'>"
+                f"<span class='tree-branch'>{prefix}{branch}</span> "
+                "<img src='/theme/icons/folder_purple.png' alt='[+]'> "
+                f"<a href='/articles/{folder}/index.html'>{folder}</a>"
+                "</div>"
+            )
+            next_prefix = prefix + ("    " if is_last else "│   ")
+            html += build_tree(node[folder], next_prefix, depth + 1)
 
     for i, (f, date) in enumerate(files):
         branch = "└──" if i == len(files) - 1 else "├──"
