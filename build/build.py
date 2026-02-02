@@ -30,7 +30,24 @@ def render(t: str, **ctx) -> str:
 
 # ---------------- Markdown ----------------
 
+def preprocess_markdown(text: str) -> str:
+    """
+    A signature is a standalone markdown line:
+        ~Name
+
+    No spaces, no inline usage, no magic.
+    """
+    out = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("~") and " " not in stripped:
+            out.append(f"<span class='signature'>{stripped}</span>")
+        else:
+            out.append(line)
+    return "\n".join(out)
+
 def render_md(text: str) -> str:
+    text = preprocess_markdown(text)
     return markdown.markdown(text, extensions=MD_EXT)
 
 def title_from_file(p: Path) -> str:
@@ -155,7 +172,6 @@ def render_tree(node, prefix="", depth=0):
     for i, folder in enumerate(folders):
         is_last = i == len(folders) - 1 and not files
 
-        # Branch only after depth 0
         branch = "└──" if is_last else "├──"
         branch_text = branch if depth > 0 else ""
 
@@ -167,8 +183,6 @@ def render_tree(node, prefix="", depth=0):
             "</div>"
         )
 
-        # IMPORTANT FIX:
-        # Only propagate │ if depth >= 1
         if depth == 0:
             next_prefix = "     "
         else:
