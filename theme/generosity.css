@@ -272,7 +272,7 @@ article,
   margin-top: 1.6rem;
   text-align: left;
   font-style: italic;
-  color: var(--accent);
+  color: var(--accent-glow);
   letter-spacing: 0.12em;
   text-shadow: 0 0 10px var(--accent-soft);
 }
