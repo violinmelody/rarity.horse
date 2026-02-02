@@ -127,6 +127,7 @@ for md_file in CONTENT.rglob("*.md"):
         title=f"{title} – {SITE_TITLE}",
         site_title=SITE_TITLE,
         site_motd=SITE_MOTD,
+        site_footer=SITE_FOOTER,
         theme_css=THEME_CSS,
         content=article_html,
     )
@@ -209,6 +210,7 @@ def build_categories(node, path=()):
         title=f"{title} – {SITE_TITLE}",
         site_title=SITE_TITLE,
         site_motd=SITE_MOTD,
+        site_footer=SITE_FOOTER,
         theme_css=THEME_CSS,
         content=category_html,
     )
@@ -246,6 +248,7 @@ index_html = render(
     title=SITE_TITLE,
     site_title=SITE_TITLE,
     site_motd=SITE_MOTD,
+    site_footer=SITE_FOOTER,
     theme_css=THEME_CSS,
     content=(
         load_about()
