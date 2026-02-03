@@ -1,0 +1,17 @@
+[project]
+name = "rarity.horse markdown-powered blog website engine"
+version = "1.2.0"
+description = "Build your static blog using markdown files"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Violin Melody" }
+]
+
+license = "LICENSE.md"
+
+dependencies = [
+  "markdown",
+  "pillow",
+  "cairosvg",
+]
