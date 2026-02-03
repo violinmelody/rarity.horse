@@ -5,6 +5,20 @@ import markdown
 import subprocess
 import html
 from urllib.parse import quote
+import re
+import io
+
+# Optional dependencies for emoji conversion
+try:
+    from PIL import Image, ImageOps  # type: ignore
+except Exception:
+    Image = None
+    ImageOps = None
+
+try:
+    import cairosvg  # type: ignore
+except Exception:
+    cairosvg = None
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = Path("content/articles")
@@ -45,10 +59,6 @@ def preprocess_markdown(text: str) -> str:
         else:
             out.append(line)
     return "\n".join(out)
-
-def render_md(text: str) -> str:
-    text = preprocess_markdown(text)
-    return markdown.markdown(text, extensions=MD_EXT)
 
 def title_from_file(p: Path) -> str:
     return p.stem.replace("_", " ").title()
@@ -101,6 +111,256 @@ THEME_CSS = load_theme_css()
 
 OUT.mkdir(exist_ok=True)
 tree = {}
+
+# ---------------- Custom emojis ----------------
+# Put your source emoji files here:
+#   content/meta/emojis/*
+# Use them in markdown like:
+#   :my_emoji:
+#
+# Output is generated as:
+#   wwwroot/emojis/my_emoji.png  (always 128x128 PNG)
+
+EMOJIS_DIR = META / "emojis"
+EMOJIS_OUT = OUT / "emojis"
+
+_EMOJI_TOKEN_RE = re.compile(r":([A-Za-z0-9_-]+):")
+
+def _normalize_emoji_key(stem: str) -> str:
+    """
+    Normalize emoji keys so they can be referenced in markdown as :key:
+    - replaces whitespace and unsupported chars with underscores
+    - collapses multiple underscores
+    - strips leading/trailing underscores
+    """
+    s = stem.strip()
+    s = re.sub(r"\s+", "_", s)
+    s = re.sub(r"[^A-Za-z0-9_-]+", "_", s)
+    s = re.sub(r"_+", "_", s)
+    return s.strip("_")
+
+def _imagemagick_convert_128(src: Path, dst: Path) -> bool:
+    """
+    Fallback converter using ImageMagick (magick/convert) if available.
+    Produces a 128x128 PNG, preserving aspect ratio and padding with transparency.
+    """
+    for bin_name in ("magick", "convert"):
+        try:
+            subprocess.check_call(
+                [
+                    bin_name,
+                    str(src),
+                    "-background",
+                    "none",
+                    "-gravity",
+                    "center",
+                    "-resize",
+                    "128x128",
+                    "-extent",
+                    "128x128",
+                    str(dst),
+                ]
+            )
+            return True
+        except FileNotFoundError:
+            continue
+        except Exception:
+            continue
+    return False
+
+def _pil_resample_filter():
+    # Pillow API changed: Image.Resampling.LANCZOS exists on newer versions.
+    if Image is None:
+        return None
+    if hasattr(Image, "Resampling"):
+        return Image.Resampling.LANCZOS
+    return getattr(Image, "LANCZOS", 1)
+
+def _pil_convert_128(src: Path, dst: Path) -> bool:
+    """
+    Convert using Pillow (recommended).
+    Produces a 128x128 PNG, preserving aspect ratio and padding with transparency.
+    """
+    if Image is None:
+        return False
+
+    try:
+        img = Image.open(src)
+        # If animated (e.g., GIF), use the first frame.
+        try:
+            img.seek(0)
+        except Exception:
+            pass
+
+        img = img.convert("RGBA")
+
+        resample = _pil_resample_filter()
+
+        # Fit within 128x128 while preserving aspect ratio
+        if ImageOps is not None and hasattr(ImageOps, "contain"):
+            img = ImageOps.contain(img, (128, 128), method=resample)
+        else:
+            img.thumbnail((128, 128), resample=resample)
+
+        # Pad to exactly 128x128
+        canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+        x = (128 - img.width) // 2
+        y = (128 - img.height) // 2
+        canvas.paste(img, (x, y), img)
+
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        canvas.save(dst, format="PNG")
+        return True
+    except Exception:
+        return False
+
+def _svg_convert_128(src: Path, dst: Path) -> bool:
+    """
+    Convert SVG to 128x128 PNG.
+    Tries cairosvg first, then ImageMagick fallback.
+    """
+    if cairosvg is not None:
+        try:
+            png_bytes = cairosvg.svg2png(url=str(src), output_width=128, output_height=128)
+            if Image is not None:
+                img = Image.open(io.BytesIO(png_bytes)).convert("RGBA")
+                # Ensure padding/exact sizing is consistent with other formats
+                resample = _pil_resample_filter()
+                if ImageOps is not None and hasattr(ImageOps, "contain"):
+                    img = ImageOps.contain(img, (128, 128), method=resample)
+                else:
+                    img.thumbnail((128, 128), resample=resample)
+
+                canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+                x = (128 - img.width) // 2
+                y = (128 - img.height) // 2
+                canvas.paste(img, (x, y), img)
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                canvas.save(dst, format="PNG")
+                return True
+
+            # If Pillow isn't available, just write cairosvg output (already 128x128)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_bytes(png_bytes)
+            return True
+        except Exception:
+            pass
+
+    # Try ImageMagick (may support SVG if delegates are installed)
+    return _imagemagick_convert_128(src, dst)
+
+def _convert_emoji_to_png_128(src: Path, dst: Path) -> bool:
+    ext = src.suffix.lower()
+    if ext == ".svg":
+        return _svg_convert_128(src, dst)
+
+    # Prefer Pillow for raster formats
+    if _pil_convert_128(src, dst):
+        return True
+
+    # Fallback to ImageMagick if Pillow isn't available or failed
+    return _imagemagick_convert_128(src, dst)
+
+def build_emojis() -> dict:
+    """
+    Scans content/meta/emojis for image files and builds a map:
+        emoji_key -> "/emojis/emoji_key.png"
+    Also converts/copies emojis into wwwroot/emojis as 128x128 PNGs.
+    """
+    if not EMOJIS_DIR.exists():
+        return {}
+
+    # (Re)create output folder to avoid stale emoji files hanging around
+    if EMOJIS_OUT.exists():
+        shutil.rmtree(EMOJIS_OUT, ignore_errors=True)
+    EMOJIS_OUT.mkdir(parents=True, exist_ok=True)
+
+    emoji_map: dict[str, str] = {}
+
+    # Allow common raster formats + svg (svg needs cairosvg or ImageMagick delegate)
+    allowed_exts = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff", ".svg"}
+
+    for src in sorted([p for p in EMOJIS_DIR.rglob("*") if p.is_file() and p.suffix.lower() in allowed_exts]):
+        key = _normalize_emoji_key(src.stem)
+        if not key:
+            continue
+
+        dst = EMOJIS_OUT / f"{key}.png"
+
+        ok = _convert_emoji_to_png_128(src, dst)
+        if not ok:
+            # Leave the token untouched in markdown if conversion fails.
+            print(f"[emoji] WARNING: Could not convert {src} -> {dst}. Install Pillow and/or ImageMagick.")
+            continue
+
+        # Map both the normalized key and a lowercase alias (convenience).
+        url = "/emojis/" + quote(dst.name)
+        emoji_map[key] = url
+        emoji_map[key.lower()] = url
+
+    return emoji_map
+
+EMOJI_MAP = build_emojis()
+
+def _replace_emojis_outside_code(text: str) -> str:
+    """
+    Replace :emoji: tokens with <img> tags, while avoiding:
+      - fenced code blocks (``` or ~~~)
+      - inline code spans (`like this`)
+    """
+    if not EMOJI_MAP:
+        return text
+
+    def repl(m: re.Match) -> str:
+        key = m.group(1)
+        url = EMOJI_MAP.get(key) or EMOJI_MAP.get(key.lower())
+        if not url:
+            return m.group(0)
+
+        # Inline HTML is allowed by python-markdown and renders inside paragraphs nicely.
+        safe_url = html.escape(url, quote=True)
+        safe_key = html.escape(key, quote=True)
+        return (
+            f"<img class='emoji' src='{safe_url}' alt=':{safe_key}:' "
+            f"title=':{safe_key}:' width='128' height='128'>"
+        )
+
+    out_lines = []
+    in_fence = False
+    fence_marker = ""
+
+    for line in text.splitlines():
+        stripped = line.lstrip()
+
+        # Toggle fenced blocks on ``` or ~~~
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            marker = stripped[:3]
+            if not in_fence:
+                in_fence = True
+                fence_marker = marker
+            else:
+                if marker == fence_marker:
+                    in_fence = False
+                    fence_marker = ""
+            out_lines.append(line)
+            continue
+
+        if in_fence:
+            out_lines.append(line)
+            continue
+
+        # Protect inline code by splitting on backticks
+        parts = line.split("`")
+        for i in range(0, len(parts), 2):  # even indices are outside code spans
+            parts[i] = _EMOJI_TOKEN_RE.sub(repl, parts[i])
+        out_lines.append("`".join(parts))
+
+    return "\n".join(out_lines)
+
+def render_md(text: str) -> str:
+    text = preprocess_markdown(text)
+    text = _replace_emojis_outside_code(text)
+    return markdown.markdown(text, extensions=MD_EXT)
 
 # ---------------- Git commit dates ----------------
 
@@ -169,7 +429,7 @@ for md_file in CONTENT.rglob("*.md"):
         content=article_html,
     )
 
-    # --- IMPORTANT CHANGE: normalize spaces -> underscores in output HTML filename ---
+    # Normalize spaces -> underscores in output HTML filename
     out_rel = out_rel_from_md(rel)
     out_file = OUT / "articles" / out_rel
     out_file.parent.mkdir(parents=True, exist_ok=True)
@@ -262,7 +522,7 @@ def render_tree(node, prefix="", depth=0, path=()):
         else:
             f, date = entry[1], entry[2]
 
-            # --- IMPORTANT CHANGE: links use normalized filename (spaces -> underscores) ---
+            # Links use normalized filename (spaces -> underscores)
             file_rel_html = out_rel_from_md(f).as_posix()
             file_href = "/articles/" + _url_quote_path(file_rel_html)
 

@@ -84,10 +84,12 @@ content/
    ├─ footer.md
    ├─ theme.md
    ├─ buttons.md
-   └─ buttons/
-      ├─ button1.png
-      ├─ button2.png
-      └─ button3.png
+   ├─ buttons/
+   │  ├─ button1.png
+   │  ├─ button2.png
+   │  └─ button3.png
+   └─ emojis/
+      └─ emoji_name_1.png
 ```
 
 ### Articles Content Rules
@@ -105,6 +107,7 @@ content/
 |-------|--------|
 | buttons.md | Buttons section on the home page |
 | buttons | Buttons images |
+| emojis | Custom emoji images (Use them with: `:file_name:`) |
 | theme.md | Site CSS theme, see theme folder for available options |
 | footer.md | Footer section on the site |
 | about.md | About section on the home page |
