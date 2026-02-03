@@ -53,8 +53,28 @@ def render_md(text: str) -> str:
 def title_from_file(p: Path) -> str:
     return p.stem.replace("_", " ").title()
 
+def slug_from_stem(stem: str) -> str:
+    """
+    Convert a filename stem into a URL/file-safe slug.
+    We currently only normalize spaces -> underscores so titles can keep spaces.
+    """
+    return stem.replace(" ", "_")
+
+def out_rel_from_md(rel_md: Path) -> Path:
+    """
+    Given a content-relative markdown path like:
+        some/folder/My Post.md
+    produce the output-relative HTML path:
+        some/folder/My_Post.html
+
+    Only the filename is normalized (spaces -> underscores).
+    Folder names are left unchanged.
+    """
+    return rel_md.with_name(slug_from_stem(rel_md.stem) + ".html")
+
 def link_from_file(l: Path) -> str:
-    return l.stem.replace(" ", "_").title()
+    # Kept for compatibility; returns the slug used in output filenames/URLs.
+    return slug_from_stem(l.stem)
 
 # ---------------- Meta ----------------
 
@@ -149,12 +169,15 @@ for md_file in CONTENT.rglob("*.md"):
         content=article_html,
     )
 
-    out_file = OUT / "articles" / rel.with_suffix(".html")
+    # --- IMPORTANT CHANGE: normalize spaces -> underscores in output HTML filename ---
+    out_rel = out_rel_from_md(rel)
+    out_file = OUT / "articles" / out_rel
     out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(full_html)
 
     img_dir = md_file.with_suffix("")
     if img_dir.exists():
+        # Keep the image folder name unchanged (including spaces) so existing markdown links keep working.
         shutil.copytree(img_dir, out_file.parent / img_dir.name, dirs_exist_ok=True)
 
 # ---------------- Tree rendering ----------------
@@ -239,7 +262,8 @@ def render_tree(node, prefix="", depth=0, path=()):
         else:
             f, date = entry[1], entry[2]
 
-            file_rel_html = f.with_suffix(".html").as_posix()
+            # --- IMPORTANT CHANGE: links use normalized filename (spaces -> underscores) ---
+            file_rel_html = out_rel_from_md(f).as_posix()
             file_href = "/articles/" + _url_quote_path(file_rel_html)
 
             # Override theme-specific indent/padding that can break tree alignment.
