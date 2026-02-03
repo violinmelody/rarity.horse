@@ -181,6 +181,15 @@ article,
   margin: 1rem auto;
 }
 
+.markdown img.emoji {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.2em; /* makes emojis sit nicely on the baseline */
+  margin: 0 0.06em;
+  object-fit: contain;
+}
+
 .markdown .signature {
   display: block;
   margin-top: 1.6rem;
