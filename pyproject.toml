@@ -8,7 +8,7 @@ authors = [
   { name = "Violin Melody" }
 ]
 
-license = "LICENSE.md"
+license = "LICENSE"
 
 dependencies = [
   "markdown",
